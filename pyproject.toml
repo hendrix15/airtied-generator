@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "airtied-generator"
+version = "0.1.0"
+description = ""
+authors = ["Hoang-An Nguyen <hoangan.nguyen@student.hpi.de>", "Hendrik Woelert <hendrik.woelert@student.hpi.de>", "Maximilian Franz <maximilian.franz@student.hpi.de>", "Stefan Spangenberg <stefan.spangenberg@student.hpi.de>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+scipy = "^1.13.0"
+sfepy = "^2024.1"
+numpy = "^1.26.4"
+
+[tool.poetry.scripts]
+generate-training-data = "training_data.generate:generate"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
