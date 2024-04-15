@@ -1,1 +1,1 @@
-# airtide-generator
+# AirTied Generator
