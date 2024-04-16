@@ -161,3 +161,6 @@ cython_debug/
 data/
 
 training_data/out
+
+# Mac
+.DS_Store

@@ -2,9 +2,12 @@ from scipy.spatial import Delaunay
 from random import randint
 from pathlib import Path
 from PyNite import FEModel3D
+from PyNite import Visualization
 from .config import Material, MaxDim, SectionProperties
 from argparse import ArgumentParser
 
+
+# Units for this model are meters and kilonewtons
 
 def test_mesh(mesh: Delaunay):
     model = FEModel3D()
@@ -12,6 +15,8 @@ def test_mesh(mesh: Delaunay):
     for i, (x, y, z) in enumerate(mesh.points):
         model.add_node(f"N{i}", x, y, z)
 
+    # let the ground nodes be support by the ground
+    # TODO: I think we should only support DZ, as they can still move sideways?
     model.def_support(
         "N0",
         support_DX=True,
@@ -42,7 +47,7 @@ def test_mesh(mesh: Delaunay):
 
     seen = set()
 
-    def add_member(u, v):
+    def add_truss_member(u, v):
         if (u, v) in seen:
             return
         model.add_member(
@@ -55,24 +60,34 @@ def test_mesh(mesh: Delaunay):
             SectionProperties.j,
             SectionProperties.a,
         )
+        # TODO: not sure if every member should be released, in the example, there is one unreleased member
+        model.def_releases(f"M{u}-{v}", False, False, False, False, True, True, \
+                           False, False, False, False, True, True)
         seen.add((u, v))
         seen.add((v, u))
 
     for i, (t, u, v, w) in enumerate(mesh.simplices):
-        add_member(t, u)
-        add_member(t, v)
-        add_member(t, w)
-        add_member(u, v)
-        add_member(u, w)
-        add_member(v, w)
+        add_truss_member(t, u)
+        add_truss_member(t, v)
+        add_truss_member(t, w)
+        add_truss_member(u, v)
+        add_truss_member(u, w)
+        add_truss_member(v, w)
+
+    
 
     num_nodes = len(mesh.points)
-    model.add_node_load(f"N{num_nodes-3}", "FZ", -300)
-    model.add_node_load(f"N{num_nodes-2}", "FZ", -300)
-    model.add_node_load(f"N{num_nodes-1}", "FZ", -300)
+    model.add_node_load(f"N{num_nodes-3}", "FZ", -50)
+    model.add_node_load(f"N{num_nodes-2}", "FZ", -50)
+    model.add_node_load(f"N{num_nodes-1}", "FZ", -50)
 
-    model.analyze(log=True, check_statics=True)
+    model.analyze(check_statics=True)
+    
+    for model_member in model.Members.values():
+        print(f"Member {model_member.name} calculated axial force: {model_member.max_axial()}")
     # TODO: assert that deformation is below threshold
+
+    # Visualization.render_model(model, render_loads=True, deformed_shape=True)
 
 
 def write_tetra_mesh(filename: str, mesh: Delaunay):
@@ -141,14 +156,14 @@ def generate(
             else:
                 target_dir.unlink()
     target_dir.mkdir(exist_ok=True)
-    force_plane = [(20, 20, MaxDim.z), (30, 30, MaxDim.z), (20, 40, MaxDim.z)]
+    force_plane = [(20, 20, max_z), (30, 30, max_z), (20, 40, max_z)]
 
-    for i in range(1, 21):
-        n = randint(0, 20)
+    for i in range(num_objects):
+        n = randint(0, max_random_points)
         points = get_random_points_below_layer(*force_plane, n)
         tri = Delaunay(points)
         test_mesh(tri)
-        write_tetra_mesh(target_dir / f"{i}.obj", tri)
+        write_tetra_mesh(target_dir / f"{i+1}.obj", tri)
 
 
 def run():
