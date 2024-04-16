@@ -13,6 +13,7 @@ python = "^3.11"
 scipy = "^1.13.0"
 sfepy = "^2024.1"
 numpy = "^1.26.4"
+torch = "^2.2.2"
 
 [tool.poetry.scripts]
 generate-training-data = "training_data.generate:generate"
