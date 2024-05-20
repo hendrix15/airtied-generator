@@ -11,12 +11,15 @@ python = "^3.11"
 
 [tool.poetry.group.dev.dependencies]
 scipy = "^1.13.0"
-sfepy = "^2024.1"
 numpy = "^1.26.4"
+pynitefea = "^0.0.93"
+ipython = "^8.23.0"
+vtk = "^9.3.0"
 torch = "^2.2.2"
 
 [tool.poetry.scripts]
-generate-training-data = "training_data.generate:generate"
+generate-training-data = "training_data.generate:run"
+generate-truss="pipeline_draft.generate_truss:run"
 
 [build-system]
 requires = ["poetry-core"]

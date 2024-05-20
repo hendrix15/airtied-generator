@@ -1,0 +1,103 @@
+{
+  "name": "Example Tower 1",
+  "vertices": {
+    "anchor1": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "anchor2": {
+      "x": 2,
+      "y": 0,
+      "z": 0
+    },
+    "anchor3": {
+      "x": 1,
+      "y": 1.73,
+      "z": 0
+    },
+    "load_node1": {
+      "x": 0,
+      "y": 0,
+      "z": 6
+    },
+    "load_node2": {
+      "x": 2,
+      "y": 0,
+      "z": 6
+    },
+    "load_node3": {
+      "x": 1,
+      "y": 1.73,
+      "z": 6
+    }
+  },
+  "edges": {
+    "Bottom1": {
+      "start": "anchor1",
+      "end": "anchor2"
+    },
+    "Bottom2": {
+      "start": "anchor2",
+      "end": "anchor3"
+    },
+    "Bottom3": {
+      "start": "anchor3",
+      "end": "anchor1"
+    },
+    "Top1": {
+      "start": "load_node1",
+      "end": "load_node2"
+    },
+    "Top2": {
+      "start": "load_node2",
+      "end": "load_node3"
+    },
+    "Top3": {
+      "start": "load_node1",
+      "end": "load_node3"
+    },
+    "Side1": {
+      "start": "anchor1",
+      "end": "load_node1"
+    },
+    "Side2": {
+      "start": "anchor2",
+      "end": "load_node2"
+    },
+    "Side3": {
+      "start": "anchor3",
+      "end": "load_node3"
+    },
+    "Diagonal1": {
+      "start": "anchor1",
+      "end": "load_node2"
+    },
+    "Diagonal2": {
+      "start": "anchor2",
+      "end": "load_node3"
+    },
+    "Diagonal3": {
+      "start": "anchor3",
+      "end": "load_node1"
+    }
+  },
+  "anchors": ["anchor1", "anchor2", "anchor3"],
+  "forces": {
+    "load_node1": {
+      "fx": 0,
+      "fy": 0,
+      "fz": -49
+    },
+    "load_node2": {
+      "fx": 0,
+      "fy": 0,
+      "fz": -49
+    },
+    "load_node3": {
+      "fx": 0,
+      "fy": 0,
+      "fz": -49
+    }
+  }
+}

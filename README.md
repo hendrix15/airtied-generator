@@ -21,3 +21,7 @@ poetry config virtualenvs.in-project true
 poetry env use python3.11
 poetry install
 ```
+
+## Representation
+
+We are using JSON files to represent inputs (anchors and forces) and trusses (name?, vertices and edges).

@@ -1,0 +1,59 @@
+{
+  "name": "Example Tower 1",
+  "vertices": {
+    "anchor1": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "anchor2": {
+      "x": 2,
+      "y": 0,
+      "z": 0
+    },
+    "anchor3": {
+      "x": 1,
+      "y": 1.73,
+      "z": 0
+    },
+    "apex": {
+      "x": 1,
+      "y": 0.577,
+      "z": 6
+    }
+  },
+  "edges": {
+    "A": {
+      "start": "anchor1",
+      "end": "anchor2"
+    },
+    "B": {
+      "start": "anchor2",
+      "end": "anchor3"
+    },
+    "C": {
+      "start": "anchor3",
+      "end": "anchor1"
+    },
+    "D": {
+      "start": "anchor1",
+      "end": "apex"
+    },
+    "E": {
+      "start": "anchor2",
+      "end": "apex"
+    },
+    "F": {
+      "start": "anchor3",
+      "end": "apex"
+    }
+  },
+  "anchors": ["anchor1", "anchor2", "anchor3"],
+  "forces": {
+    "apex": {
+      "fx": 0,
+      "fy": 0,
+      "fz": -49
+    }
+  }
+}
