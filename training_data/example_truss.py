@@ -26,12 +26,16 @@ truss.def_support('E', True, True, True, True, True, True)
 
 # Member properties were not given for this problem, so assumed values will be used
 # To make all the members act rigid, the modulus of elasticity will be set to a very large value
+
+# param E: The modulus of elasticity of the material.
+# :param G: The shear modulus of elasticity of the material.
+# :param nu: Poisson's ratio of the material.
+# :param rho: The density of the material
 E = 99999999
 G = 100
 nu = 0.3
 rho = 1
 truss.add_material('Rigid', E, G, nu, rho)
-
 
 # Create members
 truss.add_member('AB', 'A', 'B', 'Rigid', 100, 100, 100, 100)

@@ -19,6 +19,7 @@ torch = "^2.2.2"
 
 [tool.poetry.scripts]
 generate-training-data = "training_data.generate:run"
+generate-truss="pipeline_draft.generate_truss:run"
 
 [build-system]
 requires = ["poetry-core"]

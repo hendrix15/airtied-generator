@@ -3,7 +3,7 @@ from random import randint
 from pathlib import Path
 from PyNite import FEModel3D
 from PyNite import Visualization
-from .config import Material, MaxDim, SectionProperties
+from ..pipeline_draft.config import Material, MaxDim, SectionProperties
 from argparse import ArgumentParser
 
 
