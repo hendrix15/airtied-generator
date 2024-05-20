@@ -15,6 +15,7 @@ numpy = "^1.26.4"
 pynitefea = "^0.0.93"
 ipython = "^8.23.0"
 vtk = "^9.3.0"
+torch = "^2.2.2"
 
 [tool.poetry.scripts]
 generate-training-data = "training_data.generate:run"

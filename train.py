@@ -29,6 +29,7 @@ def train():
                 print(f"[{epoch + 1}, {i + 1}] loss: {running_loss / 10}")
                 running_loss = 0.0
 
+    torch.save(model.state_dict(), "demo_model.pt")
     print("Finished Training")
 
 
