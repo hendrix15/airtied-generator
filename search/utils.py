@@ -1,5 +1,7 @@
 import json
 
+import yaml
+
 from search.models import Node, Vector3
 
 
@@ -22,3 +24,9 @@ def read_json(filename: str) -> list[Node]:
                 node = next(node for node in nodes if node.id == node_id)
                 node.load = Vector3(x=force["x"], y=force["y"], z=force["z"])
     return nodes
+
+
+def load_config(filename: str) -> dict:
+    with open(filename) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+    return config

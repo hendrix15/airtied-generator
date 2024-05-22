@@ -1,0 +1,26 @@
+ucts:
+  max_nodes: 7
+  max_iter: 1000
+  coordinate_range:
+    - - 0.0
+      - 5.0
+    - - 0.0
+      - 5.0
+    - - 0.0
+      - 5.0
+  len_range:
+    - 0.5
+    - 10
+  area_range:
+    - 0.00006452
+    - 0.0225806
+  MASS_OUTPUT_ALL_THRESHOLD: 300
+
+truss_env:
+  E: 1.93e+11
+  pho: 8.0e+3
+  sigma_T: 123.0e+6
+  sigma_C: 123.0e+6
+  slenderness_ratio_c: 180.0
+  slenderness_ratio_t: 220.0
+  dislimit: 0.002
