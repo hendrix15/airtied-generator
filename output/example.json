@@ -1,0 +1,62 @@
+{
+  "anchors": {
+    "anchor1": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "anchor2": {
+      "x": 2,
+      "y": 0,
+      "z": 0
+    },
+    "anchor3": {
+      "x": 1,
+      "y": 2,
+      "z": 0
+    }
+  },
+  "nodes": {
+    "node1": {
+      "x": 1,
+      "y": 1,
+      "z": 6
+    }
+  },
+  "edges": {
+    "A": {
+      "start": "anchor1",
+      "end": "anchor2"
+    },
+    "B": {
+      "start": "anchor2",
+      "end": "anchor3"
+    },
+    "C": {
+      "start": "anchor3",
+      "end": "anchor1"
+    },
+    "D": {
+      "start": "anchor1",
+      "end": "node1"
+    },
+    "E": {
+      "start": "anchor2",
+      "end": "node1"
+    },
+    "F": {
+      "start": "anchor3",
+      "end": "node1"
+    }
+  },
+  "forces": {
+    "5kg_6m_high": {
+      "nodes": [
+        "node1"
+      ],
+      "x": 0,
+      "y": 0,
+      "z": -49
+    }
+  }
+}
