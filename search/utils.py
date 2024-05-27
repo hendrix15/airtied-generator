@@ -19,6 +19,16 @@ def read_json(filename: str) -> list[Node]:
                     support=True,
                 )
             )
+        for id, coordinates in data["nodes"].items():
+            nodes.append(
+                Node(
+                    id=id,
+                    vec=Vector3(
+                        x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
+                    ),
+                    support=False,
+                )
+            )
         for id, force in data["forces"].items():
             for node_id in force["nodes"]:
                 node = next(node for node in nodes if node.id == node_id)

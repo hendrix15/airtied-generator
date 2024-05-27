@@ -12,14 +12,21 @@
     },
     "anchor3": {
       "x": 1,
-      "y": 1.73,
+      "y": 2,
       "z": 0
+    }
+  },
+  "nodes": {
+    "node1": {
+      "x": 1,
+      "y": 1,
+      "z": 6
     }
   },
   "forces": {
     "5kg_6m_high": {
       "nodes": [
-        "anchor3"
+        "node1"
       ],
       "x": 0,
       "y": 0,
