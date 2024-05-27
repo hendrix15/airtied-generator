@@ -57,9 +57,24 @@ class Node:
         self.support = support
         self.load = load
 
+    def get_json(self) -> dict:
+        return {
+            "id": self.id,
+            "vec": {"x": self.vec.x, "y": self.vec.y, "z": self.vec.z},
+            "support": self.support,
+            "load": (
+                {"x": self.load.x, "y": self.load.y, "z": self.load.z}
+                if self.load
+                else None
+            ),
+        }
+
 
 class Edge:
     def __init__(self, id: str, u: Node, v: Node) -> None:
         self.id = id
         self.u = u
         self.v = v
+
+    def get_json(self) -> dict:
+        return {"id": self.id, "u": self.u.id, "v": self.v.id}

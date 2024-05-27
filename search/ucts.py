@@ -20,4 +20,7 @@ def execute(run_id: str, config_file: str, input_file: str) -> None:
     mcts = TrussSearchTree(root=root, config=truss_env_config)
     best_node = mcts.best_action(ucts_config.max_iter)
 
-    print(best_node)
+    result = {}
+    result["nodes"] = [node.get_json() for node in best_node.state.nodes]
+    result["edges"] = [edge.get_json() for edge in best_node.state.edges]
+    print(result)
