@@ -58,7 +58,7 @@ class Node:
         self.load = load
 
 
-class Bar:
+class Edge:
     def __init__(self, id: str, u: Node, v: Node) -> None:
         self.id = id
         self.u = u

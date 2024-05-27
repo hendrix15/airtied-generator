@@ -1,37 +1,41 @@
-from enum import Enum
-
-from search.models import Node
-
-
-class Opt(Enum):
-    ADD_NODE = 0
-    ADD_EDGE = 1
+from abc import ABC, abstractmethod
+from search.models import Node, Edge
+from search.state import State
 
 
-class Action:
+class AbstractAction(ABC):
+    @abstractmethod
+    def execute(self, state: State) -> State:
+        pass
+
+
+class AddNodeAction(AbstractAction):
     def __init__(
         self,
-        opt,
-        u: Node,
-        v: Node,
-        vec: Node | None = None,
-        eid=0,
+        newNode: Node,
+        e_id=0,
     ):
-        self.opt = opt
-        self.stateid = -1
-        self.d = None
-        self.t = None
-
-        if opt == Opt.ADD_NODE.value:
-            self.vec = vec  # add node
-
-        if opt == Opt.ADD_EDGE.value:
-            self.opt = opt
-            self.u = u
-            self.v = v
+        self.node = newNode
+        self.e_id = e_id
 
     def __str__(self):
-        if self.opt == Opt.ADD_NODE.value:
-            return "add node at" + self.vec.__str__()
-        if self.opt == Opt.ADD_EDGE.value:
-            return "add edge between" + str(self.u) + "and" + str(self.v)
+        return "add node at" + self.node.__str__()
+
+    def execute(self, state: State):
+        state.addNode(self.node)
+        return state
+
+
+class AddEdgeAction(AbstractAction):
+    def __init__(
+        self,
+        edge: Edge,
+    ):
+        self.edge = edge
+
+    def __str__(self):
+        return "add node at" + self.node.__str__()
+
+    def execute(self, state: State):
+        state.addEdge(self.node)
+        return state
