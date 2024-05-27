@@ -61,15 +61,16 @@ class State:
         return Node(id, Vector3(x, y, z), support=False, load=None)
 
     def _create_new_edge(self):
-        # TODO: improve this
-        u, v = random.sample(self.nodes, 2)
-        existing_edges = [
-            edge
-            for edge in self.edges
-            if edge.u.id == u.id
-            and edge.v.id == v.id
-            or edge.u.id == v.id
-            and edge.v.id == u.id
-        ]
+        if len(self.edges) == len(self.nodes) * (len(self.nodes) - 1) / 2:
+            return None
 
-        return Edge(str(uuid.uuid4()), u, v)
+        while True:
+            u, v = random.sample(self.nodes, 2)
+            if not self._edge_exists(u, v):
+                return Edge(str(uuid.uuid4()), u, v)
+
+    def _edge_exists(self, u, v):
+        for edge in self.edges:
+            if (edge.u == u and edge.v == v) or (edge.u == v and edge.v == u):
+                return True
+        return False

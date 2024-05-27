@@ -26,10 +26,9 @@ class TreeSearchNode:
 
     @property
     def q(self):
-        # TODO: put the FEA here
-        wins = self._results[self.parent.state.next_to_move]
-        loses = self._results[-1 * self.parent.state.next_to_move]
-        return wins - loses
+        holding_trusses = self._results[self.parent.state.truss_holds()]
+        breaking_trusses = self._results[not self.parent.state.truss_holds()]
+        return holding_trusses - breaking_trusses
 
     @property
     def n(self):
