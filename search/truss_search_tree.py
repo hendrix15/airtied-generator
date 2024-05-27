@@ -6,22 +6,25 @@ from search.state import State
 
 
 class TreeSearchNode:
+
     def __init__(
         self,
         config: TrussEnvironmentConfig,
         state: State,
         parent: TreeSearchNode | None = None,
     ):
-        super().__init__(state, parent)
+        self.state = state
+        self.parent = parent
         self._number_of_visits = 0.0
         self._results = defaultdict(int)
         self._untried_actions = None
         self.config = config
+        self.children = []
 
     @property
     def untried_actions(self):
         if self._untried_actions is None:
-            self._untried_actions = self.state.get_legal_actions(self.config)
+            self._untried_actions = self.state.get_legal_actions()
         return self._untried_actions
 
     @property
@@ -37,7 +40,7 @@ class TreeSearchNode:
     def expand(self):
         action = self.untried_actions.pop()
         next_state = self.state.move(action)
-        child_node = TreeSearchNode(next_state, parent=self)
+        child_node = TreeSearchNode(state=next_state, config=self.config, parent=self)
         self.children.append(child_node)
         return child_node
 
@@ -47,7 +50,7 @@ class TreeSearchNode:
     def rollout(self):
         current_rollout_state = self.state
         while not current_rollout_state.should_stop_search():
-            possible_moves = current_rollout_state.get_legal_actions(self.config)
+            possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
         return current_rollout_state.truss_holds()

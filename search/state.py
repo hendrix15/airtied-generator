@@ -2,7 +2,6 @@ from search.action import AbstractAction
 import uuid
 from search.models import Node, Vector3, Edge
 from search.config import TrussEnvironmentConfig, UCTSConfig
-import numpy as np
 import random
 from math import ceil, floor
 from search.action import AddNodeAction, AddEdgeAction
@@ -31,9 +30,11 @@ class State:
     def addEdge(self, edge):
         self.edges.append(edge)
 
-    def get_legal_actions(self, config: TrussEnvironmentConfig):
-        new_node = self._create_random_node(config)
+    def get_legal_actions(self):
+        new_node = self._create_random_node()
         new_edge = self._create_new_edge()
+        if new_edge is None:
+            return [AddNodeAction(new_node)]
         return [AddNodeAction(new_node, id), AddEdgeAction(new_edge)]
 
     def move(self, action: AbstractAction):
@@ -42,16 +43,15 @@ class State:
 
     def truss_holds(self):
         # TODO: Check FEA if the truss holds
-        pass
+        return random.choice([True, False])
 
-    @property
     def should_stop_search(self):
         return self.iteration > self.config.max_iter or self.truss_holds()
 
-    def _create_random_node(self, config: TrussEnvironmentConfig):
-        min_x, max_x = config.min_x, config.max_x
-        min_y, max_y = config.min_y, config.max_y
-        min_z, max_z = config.min_z, config.max_z
+    def _create_random_node(self):
+        min_x, max_x = self.config.min_x, self.config.max_x
+        min_y, max_y = self.config.min_y, self.config.max_y
+        min_z, max_z = self.config.min_z, self.config.max_z
         id = str(uuid.uuid4())
 
         x = random.randint(floor(min_x / 0.25), ceil(max_x / 0.25)) * 0.25
