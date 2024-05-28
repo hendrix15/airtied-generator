@@ -1,7 +1,7 @@
 from search.config import TrussEnvironmentConfig, UCTSConfig
 from search.state import State
 from search.truss_search_tree import TreeSearchNode, TrussSearchTree
-from search.utils import load_config, read_json
+from search.utils import load_config, read_json, visualize
 
 
 def execute(run_id: str, config_file: str, input_file: str) -> None:
@@ -18,6 +18,8 @@ def execute(run_id: str, config_file: str, input_file: str) -> None:
     best_node = mcts.best_action(ucts_config.max_iter)
 
     result = {}
-    result["nodes"] = [node.get_json() for node in best_node.state.nodes]
-    result["edges"] = [edge.get_json() for edge in best_node.state.edges]
+    result["nodes"] = [node for node in best_node.state.nodes]
+    result["edges"] = [edge for edge in best_node.state.edges]
     print(result)
+
+    visualize(nodes=result["nodes"], edges=result["edges"])

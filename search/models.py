@@ -50,12 +50,18 @@ class Vector3:
 
 class Node:
     def __init__(
-        self, id: str, vec: Vector3, support: bool = False, load: Vector3 | None = None
+        self,
+        id: str,
+        vec: Vector3,
+        support: bool = False,
+        load: Vector3 | None = None,
+        fixed: bool = False,
     ) -> None:
         self.id = id
         self.vec = vec
         self.support = support
         self.load = load
+        self.fixed = fixed
 
     def get_json(self) -> dict:
         return {

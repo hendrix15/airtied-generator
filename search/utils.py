@@ -1,5 +1,6 @@
 import json
 
+import plotly.graph_objects as go
 import yaml
 from PyNite import FEModel3D
 
@@ -19,6 +20,7 @@ def read_json(filename: str) -> list[Node]:
                         x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
                     ),
                     support=True,
+                    fixed=True,
                 )
             )
         for id, coordinates in data["nodes"].items():
@@ -29,6 +31,7 @@ def read_json(filename: str) -> list[Node]:
                         x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
                     ),
                     support=False,
+                    fixed=True,
                 )
             )
         for id, force in data["forces"].items():
@@ -89,3 +92,109 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
         )
 
     return truss
+
+
+def visualize(nodes: list[Node], edges: list[Edge]) -> None:
+    input_anchors = {
+        node.id: (node.vec.x, node.vec.y, node.vec.z)
+        for node in nodes
+        if node.fixed and node.support
+    }
+    input_nodes = {
+        node.id: (node.vec.x, node.vec.y, node.vec.z)
+        for node in nodes
+        if node.fixed and not node.support
+    }
+    other_nodes = {
+        node.id: (node.vec.x, node.vec.y, node.vec.z)
+        for node in nodes
+        if not node.fixed
+    }
+
+    generated_edges = []
+    for edge in edges:
+        generated_edges.append((edge.u.vec.x, edge.u.vec.y, edge.u.vec.z))
+        generated_edges.append((edge.v.vec.x, edge.v.vec.y, edge.v.vec.z))
+
+    # force_coords = {name: (v["x"], v["y"], v["z"]) for name, v in forces.items()}
+    # force_vectors = {name: (v["fx"], v["fy"], v["fz"]) for name, v in forces.items()}
+
+    scatter_input_anchors = go.Scatter3d(
+        x=[input_anchors[name][0] for name in input_anchors],
+        y=[input_anchors[name][1] for name in input_anchors],
+        z=[input_anchors[name][2] for name in input_anchors],
+        mode="markers+text",
+        marker=dict(size=5, color="blue"),
+        text=list(input_anchors.keys()),
+        textposition="top center",
+    )
+
+    scatter_input_nodes = go.Scatter3d(
+        x=[input_nodes[name][0] for name in input_nodes],
+        y=[input_nodes[name][1] for name in input_nodes],
+        z=[input_nodes[name][2] for name in input_nodes],
+        mode="markers+text",
+        marker=dict(size=5, color="green"),
+        text=list(input_nodes.keys()),
+        textposition="top center",
+    )
+
+    scatter_other_nodes = go.Scatter3d(
+        x=[other_nodes[name][0] for name in other_nodes],
+        y=[other_nodes[name][1] for name in other_nodes],
+        z=[other_nodes[name][2] for name in other_nodes],
+        mode="markers+text",
+        marker=dict(size=5, color="red"),
+        text=list(other_nodes.keys()),
+        textposition="top center",
+    )
+
+    scatter_generated_edges = go.Scatter3d(
+        x=[generated_edge[0] for generated_edge in generated_edges],
+        y=[generated_edge[1] for generated_edge in generated_edges],
+        z=[generated_edge[2] for generated_edge in generated_edges],
+        mode="lines",
+        name="lines",
+    )
+
+    # Create arrows for force vectors
+    # force_arrows = []
+    # for name, (fx, fy, fz) in force_vectors.items():
+    #     x, y, z = force_coords[name]
+    #     force_arrows.append(go.Cone(
+    #         x=[x],
+    #         y=[y],
+    #         z=[z],
+    #         u=[fx],
+    #         v=[fy],
+    #         w=[fz],
+    #         sizemode="scaled",
+    #         sizeref=2,
+    #         anchor="tip",
+    #         colorscale=[[0, 'red'], [1, 'red']],
+    #         showscale=False
+    #     ))
+
+    # Combine all elements
+    # fig = go.Figure(data=[scatter_anchors, scatter_forces] + force_arrows)
+    fig = go.Figure(
+        data=[
+            scatter_input_anchors,
+            scatter_input_nodes,
+            scatter_other_nodes,
+            scatter_generated_edges,
+        ]
+    )
+
+    # Set labels
+    fig.update_layout(
+        scene=dict(
+            xaxis_title="X",
+            yaxis_title="Y",
+            zaxis_title="Z",
+        ),
+        title="Tower Visualization with Forces",
+    )
+
+    # Show plot
+    fig.show()
