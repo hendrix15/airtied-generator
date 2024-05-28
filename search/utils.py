@@ -63,8 +63,8 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
     for edge in edges:
         truss.add_member(
             edge.id,
-            edge.u,
-            edge.v,
+            edge.u.id,
+            edge.v.id,
             Material.name,
             SectionProperties.iy,
             SectionProperties.iz,
