@@ -1,10 +1,12 @@
-from search.action import AbstractAction
-import uuid
-from search.models import Node, Vector3, Edge
-from search.config import TrussEnvironmentConfig, UCTSConfig
 import random
+import uuid
 from math import ceil, floor
-from search.action import AddNodeAction, AddEdgeAction
+
+from utils import generate_FEA_truss
+
+from search.action import AbstractAction, AddEdgeAction, AddNodeAction
+from search.config import UCTSConfig
+from search.models import Edge, Node, Vector3
 
 
 class State:
@@ -42,8 +44,12 @@ class State:
         return action.execute(self)
 
     def truss_holds(self):
-        # TODO: Check FEA if the truss holds
-        return random.choice([True, False])
+        truss = generate_FEA_truss(self.nodes, self.edges)
+        try:
+            truss.analyze(check_statics=True)
+            return True
+        except Exception:
+            return False
 
     def should_stop_search(self):
         return self.iteration > self.config.max_iter or self.truss_holds()
