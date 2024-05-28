@@ -26,10 +26,10 @@ class State:
             + str(self.eid)
         )
 
-    def addNode(self, node):
+    def add_node(self, node):
         self.nodes.append(node)
 
-    def addEdge(self, edge):
+    def add_edge(self, edge):
         self.edges.append(edge)
 
     def get_legal_actions(self):

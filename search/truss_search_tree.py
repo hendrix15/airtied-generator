@@ -1,12 +1,14 @@
 from __future__ import annotations
-from search.config import TrussEnvironmentConfig
-import numpy as np
+
 from collections import defaultdict
+
+import numpy as np
+
+from search.config import TrussEnvironmentConfig
 from search.state import State
 
 
 class TreeSearchNode:
-
     def __init__(
         self,
         config: TrussEnvironmentConfig,

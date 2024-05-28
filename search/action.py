@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from search.models import Node, Edge
+
+from search.models import Edge, Node
 
 
 class AbstractAction(ABC):
@@ -17,11 +18,8 @@ class AddNodeAction(AbstractAction):
         self.node = newNode
         self.e_id = e_id
 
-    def __str__(self):
-        return "add node at" + self.node.__str__()
-
     def execute(self, state):
-        state.addNode(self.node)
+        state.add_node(self.node)
         return state
 
 
@@ -33,5 +31,5 @@ class AddEdgeAction(AbstractAction):
         self.edge = edge
 
     def execute(self, state):
-        state.addEdge(self.edge)
+        state.add_edge(self.edge)
         return state
