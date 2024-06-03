@@ -63,7 +63,7 @@ class State:
         y = random.randint(floor(min_y / 0.25), ceil(max_y / 0.25)) * 0.25
         z = random.randint(floor(min_z / 0.25), ceil(max_z / 0.25)) * 0.25
 
-        return Node(id, Vector3(x, y, z), support=False, load=None)
+        return Node(id, Vector3(x, y, z))
 
     def _create_new_edge(self):
         if len(self.edges) == len(self.nodes) * (len(self.nodes) - 1) / 2:

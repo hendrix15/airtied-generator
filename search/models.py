@@ -49,18 +49,27 @@ class Vector3:
             return False
 
 
+class Bool3:
+    def __init__(self, x: bool = False, y: bool = False, z: bool = False) -> None:
+        self.x = x
+        self.y = y
+        self.z = z
+
+
 class Node:
     def __init__(
         self,
         id: str,
         vec: Vector3,
-        support: bool = False,
+        r_support: Bool3 | None = None,
+        t_support: Bool3 | None = None,
         load: Vector3 | None = None,
         fixed: bool = False,
     ) -> None:
         self.id = id
         self.vec = vec
-        self.support = support
+        self.r_support = r_support
+        self.t_support = t_support
         self.load = load
         self.fixed = fixed
 
@@ -68,12 +77,22 @@ class Node:
         return {
             "id": self.id,
             "vec": {"x": self.vec.x, "y": self.vec.y, "z": self.vec.z},
-            "support": self.support,
+            "r_support": (
+                {"x": self.r_support.x, "y": self.r_support.y, "z": self.r_support.z}
+                if self.r_support
+                else None
+            ),
+            "t_support": (
+                {"x": self.t_support.x, "y": self.t_support.y, "z": self.t_support.z}
+                if self.t_support
+                else None
+            ),
             "load": (
                 {"x": self.load.x, "y": self.load.y, "z": self.load.z}
                 if self.load
                 else None
             ),
+            "fixed": self.fixed,
         }
 
 

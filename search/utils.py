@@ -5,35 +5,37 @@ import yaml
 from PyNite import FEModel3D
 
 from search.config import Material, SectionProperties
-from search.models import Edge, Node, Vector3
+from search.models import Bool3, Edge, Node, Vector3
 
 
 def read_json(filename: str) -> list[Node]:
     nodes = []
     with open(filename) as f:
         data = json.load(f)
-        for id, coordinates in data["anchors"].items():
-            nodes.append(
-                Node(
-                    id=id,
-                    vec=Vector3(
-                        x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
-                    ),
-                    support=True,
-                    fixed=True,
-                )
-            )
         for id, coordinates in data["nodes"].items():
-            nodes.append(
-                Node(
-                    id=id,
-                    vec=Vector3(
-                        x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
-                    ),
-                    support=False,
-                    fixed=True,
+            if id in data["anchors"]:
+                anchor = data["anchors"][id]
+                nodes.append(
+                    Node(
+                        id=id,
+                        vec=Vector3(
+                            x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
+                        ),
+                        r_support=Bool3(x=anchor["rx"], y=anchor["ry"], z=anchor["rz"]),
+                        t_support=Bool3(x=anchor["tx"], y=anchor["ty"], z=anchor["tz"]),
+                        fixed=True,
+                    )
                 )
-            )
+            else:
+                nodes.append(
+                    Node(
+                        id=id,
+                        vec=Vector3(
+                            x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
+                        ),
+                        fixed=True,
+                    )
+                )
         for id, force in data["forces"].items():
             for node_id in force["nodes"]:
                 node = next(node for node in nodes if node.id == node_id)
@@ -53,8 +55,16 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
 
     for node in nodes:
         truss.add_node(node.id, node.vec.x, node.vec.y, node.vec.z)
-        if node.support:
-            truss.def_support(node.id, True, True, True, True, True, True)
+        if node.r_support and node.t_support:
+            truss.def_support(
+                node.id,
+                node.t_support.x,
+                node.t_support.y,
+                node.t_support.z,
+                node.r_support.x,
+                node.r_support.y,
+                node.r_support.z,
+            )
         if node.load:
             if node.load.x != 0:
                 truss.add_node_load(node.id, "FX", node.load.x)
@@ -74,7 +84,6 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
             SectionProperties.j,
             SectionProperties.a,
         )
-        # do we have to release all edges??
         truss.def_releases(
             edge.id,
             False,
@@ -98,12 +107,12 @@ def visualize(nodes: list[Node], edges: list[Edge]) -> None:
     input_anchors = {
         node.id: (node.vec.x, node.vec.y, node.vec.z)
         for node in nodes
-        if node.fixed and node.support
+        if node.fixed and node.r_support and node.t_support
     }
     input_nodes = {
         node.id: (node.vec.x, node.vec.y, node.vec.z)
         for node in nodes
-        if node.fixed and not node.support
+        if node.fixed and not node.r_support and not node.t_support
     }
     other_nodes = {
         node.id: (node.vec.x, node.vec.y, node.vec.z)
