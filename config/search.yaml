@@ -3,11 +3,11 @@ ucts:
   max_iter: 100
   coordinate_range:
     - - 0.0
-      - 5.0
+      - 2.0
     - - 0.0
-      - 5.0
+      - 2.0
     - - 0.0
-      - 5.0
+      - 6.0
   len_range:
     - 0.5
     - 10

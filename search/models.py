@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 
 class Vector3:
     def __init__(self, x: float = 0.0, y: float = 0.0, z: float = 0.0) -> None:
@@ -84,3 +85,10 @@ class Edge:
 
     def get_json(self) -> dict:
         return {"id": self.id, "u": self.u.id, "v": self.v.id}
+
+    def length(self) -> float:
+        p1 = np.array([self.u.vec.x, self.u.vec.y, self.u.vec.z])
+        p2 = np.array([self.v.vec.x, self.v.vec.y, self.v.vec.z])
+
+        squared_dist = np.sum((p1 - p2) ** 2, axis=0)
+        return np.sqrt(squared_dist)

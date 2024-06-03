@@ -2,7 +2,7 @@ import random
 import uuid
 from math import ceil, floor
 
-from search.action import AbstractAction, AddEdgeAction, AddNodeAction
+from search.action import AbstractAction, AddEdgeAction, AddNodeWithEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
 from search.utils import generate_FEA_truss
@@ -35,8 +35,8 @@ class State:
         new_node = self._create_random_node()
         new_edge = self._create_new_edge()
         if new_edge is None:
-            return [AddNodeAction(new_node)]
-        return [AddNodeAction(new_node, id), AddEdgeAction(new_edge)]
+            return [AddNodeWithEdgeAction(new_node)]
+        return [AddNodeWithEdgeAction(new_node), AddEdgeAction(new_edge)]
 
     def move(self, action: AbstractAction):
         self.iteration += 1
@@ -79,3 +79,6 @@ class State:
             if (edge.u == u and edge.v == v) or (edge.u == v and edge.v == u):
                 return True
         return False
+
+    def total_length(self):
+        return sum(edge.length() for edge in self.edges)

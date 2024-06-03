@@ -16,11 +16,10 @@ def execute(run_id: str, config_file: str, input_file: str) -> None:
     root = TreeSearchNode(state=state, config=truss_env_config, parent=None)
     mcts = TrussSearchTree(root=root, config=truss_env_config)
     best_node = mcts.best_action(ucts_config.max_iter)
-
     result = {}
     result["nodes"] = [node for node in best_node.state.nodes]
     result["edges"] = [edge for edge in best_node.state.edges]
-    print(result)
+    best_children = root.best_children(5)
 
     truss = generate_FEA_truss(nodes=result["nodes"], edges=result["edges"])
     try:
@@ -32,3 +31,4 @@ def execute(run_id: str, config_file: str, input_file: str) -> None:
         visualize(nodes=result["nodes"], edges=result["edges"])
     except Exception:
         raise Exception("Truss is not stable")
+   
