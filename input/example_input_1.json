@@ -22,9 +22,8 @@
       "z": 6
     }
   },
-  "anchors": [
-    {
-      "name": "anchor1",
+  "anchors": {
+    "anchor1": {
       "rx": false,
       "ry": false,
       "rz": false,
@@ -32,8 +31,7 @@
       "ty": true,
       "tz": true
     },
-    {
-      "name": "anchor2",
+    "anchor2": {
       "rx": false,
       "ry": false,
       "rz": false,
@@ -41,8 +39,7 @@
       "ty": true,
       "tz": true
     },
-    {
-      "name": "anchor3",
+    "anchor3": {
       "rx": false,
       "ry": false,
       "rz": false,
@@ -50,7 +47,7 @@
       "ty": true,
       "tz": true
     }
-  ],
+  },
   "forces": {
     "apex_load": {
       "nodes": ["apex"],
