@@ -1,7 +1,7 @@
 from search.config import TrussEnvironmentConfig, UCTSConfig
 from search.state import State
 from search.truss_search_tree import TreeSearchNode, TrussSearchTree
-from search.utils import load_config, read_json, visualize
+from search.utils import generate_FEA_truss, load_config, read_json, visualize
 
 
 def execute(run_id: str, config_file: str, input_file: str) -> None:
@@ -22,4 +22,13 @@ def execute(run_id: str, config_file: str, input_file: str) -> None:
     result["edges"] = [edge for edge in best_node.state.edges]
     print(result)
 
-    visualize(nodes=result["nodes"], edges=result["edges"])
+    truss = generate_FEA_truss(nodes=result["nodes"], edges=result["edges"])
+    try:
+        truss.analyze(check_statics=True)
+        for members in truss.Members.values():
+            print(
+                f"Member {members.name} calculated axial force: {members.max_axial()}"
+            )
+        visualize(nodes=result["nodes"], edges=result["edges"])
+    except Exception:
+        raise Exception("Truss is not stable")
