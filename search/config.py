@@ -68,16 +68,16 @@ class Material:
     """Material used for Finite Element Analysis"""
 
     name = "Steel"
-    e = 29000  # (ksi) Modulus of elasticity
-    g = 11400  # (ksi) Shear modulus
+    e = 199.95  # (GPa) Modulus of elasticity
+    g = 78.60 # GPa Shear modulus
     nu = 0.30  # Poisson's ratio
-    rho = 0.000283  # (kci) Density
+    rho = 7833.41  # kg per cubic metre Density
 
 
 class SectionProperties:
     """Section Properties used for Finite Element Analysis"""
 
-    iy = 17.3  # (in**4) Weak axis moment of inertia
-    iz = 204  # (in**4) Strong axis moment of inertia
-    j = 0.300  # (in**4) Torsional constant
-    a = 7.65  # (in**2) Cross-sectional area
+    iy = 0.0000072  # (m**4) Weak axis moment of inertia
+    iz = 0.000085  # (m**4) Strong axis moment of inertia
+    j = 1.249e-7  # (m**4) Torsional constant
+    a = 0.0049  # (m**2) Cross-sectional area
