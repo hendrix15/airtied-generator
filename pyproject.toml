@@ -22,7 +22,7 @@ ruff = "^0.4.4"
 
 [tool.poetry.scripts]
 generate-training-data = "training_data.generate:run"
-generate-truss="pipeline_draft.generate_truss:run"
+generate-truss="pipeline:main"
 
 [build-system]
 requires = ["poetry-core"]

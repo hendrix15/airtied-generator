@@ -8,12 +8,12 @@ from pipeline_draft.config import Material, SectionProperties
 def get_truss(anchors, forces, input_file):
     # Magic ✨
     if "example_input_2.json" in input_file:
-        with open("./pipeline_draft/example_tower_2.json") as f:
+        with open("output/example_tower_2.json") as f:
             truss = json.load(f)
             print(truss)
             return truss["nodes"], truss["edges"], truss["anchors"], truss["forces"]
     elif "example_input_1.json" in input_file:
-        with open("./pipeline_draft/example_tower_1.json") as f:
+        with open("output/example_tower_1.json") as f:
             truss = json.load(f)
             print(truss)
             return truss["nodes"], truss["edges"], truss["anchors"], truss["forces"]
@@ -31,7 +31,7 @@ def generate_truss(input_file):
 
     edges = input_data.get("edges", {})
 
-    # nodes, edges, anchors, forces = get_truss(anchors, forces, input_file)
+    nodes, edges, anchors, forces = get_truss(anchors, forces, input_file)
 
     return nodes, edges, anchors, forces
 
@@ -58,10 +58,9 @@ def generate_FEA_truss(nodes, edges, anchors, forces) -> FEModel3D:
 
     for name, node in nodes.items():
         truss.add_node(name, node["x"], node["y"], node["z"])
-
-    for name, node in anchors.items():
-        truss.add_node(name, node["x"], node["y"], node["z"])
-        truss.def_support(name, True, True, True, True, True, True)
+        if name in anchors:
+            anchor = anchors[name]
+            truss.def_support(name, anchor["tx"], anchor["ty"], anchor["tz"], anchor["rx"], anchor["ry"], anchor["rz"])
 
     for name, force in forces.items():
         for force_direction, force_magnitude in get_FEA_forces(force):

@@ -1,6 +1,6 @@
 {
   "name": "Example Tower 1",
-  "vertices": {
+  "nodes": {
     "anchor1": {
       "x": 0,
       "y": 0,
@@ -48,12 +48,38 @@
       "end": "apex"
     }
   },
-  "anchors": ["anchor1", "anchor2", "anchor3"],
+  "anchors": {
+    "anchor1": {
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
+    },
+    "anchor2": {
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
+    },
+    "anchor3": {
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
+    }
+  },
   "forces": {
-    "apex": {
-      "fx": 0,
-      "fy": 0,
-      "fz": -49
+    "apex_load": {
+      "nodes": ["apex"],
+      "x": 0,
+      "y": 0,
+      "z": -49
     }
   }
 }

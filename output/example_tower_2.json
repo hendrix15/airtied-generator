@@ -1,6 +1,6 @@
 {
-  "name": "Example Tower 1",
-  "vertices": {
+  "name": "Example Tower 2",
+  "nodes": {
     "anchor1": {
       "x": 0,
       "y": 0,
@@ -82,22 +82,41 @@
       "end": "load_node1"
     }
   },
-  "anchors": ["anchor1", "anchor2", "anchor3"],
+  "anchors": [
+    {
+      "name": "anchor1",
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
+    },
+    {
+      "name": "anchor2",
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
+    },
+    {
+      "name": "anchor3",
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
+    }
+  ],
   "forces": {
-    "load_node1": {
-      "fx": 0,
-      "fy": 0,
-      "fz": -49
-    },
-    "load_node2": {
-      "fx": 0,
-      "fy": 0,
-      "fz": -49
-    },
-    "load_node3": {
-      "fx": 0,
-      "fy": 0,
-      "fz": -49
+    "load_node": {
+      "nodes": ["load_node1", "load_node2", "load_node3"],
+      "x": 0,
+      "y": 0,
+      "z": -49
     }
   }
 }
