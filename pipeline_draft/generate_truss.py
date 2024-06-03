@@ -10,12 +10,10 @@ def get_truss(anchors, forces, input_file):
     if "example_input_2.json" in input_file:
         with open("output/example_tower_2.json") as f:
             truss = json.load(f)
-            print(truss)
             return truss["nodes"], truss["edges"], truss["anchors"], truss["forces"]
     elif "example_input_1.json" in input_file:
         with open("output/example_tower_1.json") as f:
             truss = json.load(f)
-            print(truss)
             return truss["nodes"], truss["edges"], truss["anchors"], truss["forces"]
 
 
@@ -38,7 +36,7 @@ def generate_truss(input_file):
 
 def finite_element_analysis(nodes, edges, anchors, forces) -> FEModel3D:
     truss_model = generate_FEA_truss(nodes, edges, anchors, forces)
-    truss_model.analyze(check_statics=True)
+    truss_model.analyze_PDelta()
 
     for members in truss_model.Members.values():
         print(f"Member {members.name} calculated axial force: {members.max_axial()}")
