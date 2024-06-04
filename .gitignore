@@ -166,3 +166,8 @@ training_data/out
 
 # Mac
 .DS_Store
+
+
+# output
+output/
+images/

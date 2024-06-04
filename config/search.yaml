@@ -6,15 +6,15 @@ general:
 
 ucts:
   max_nodes: 7
-  max_iter: 10
-  max_iter_per_node: 4
+  max_iter: 100
+  max_iter_per_node: 40
   coordinate_range:
     - - 0.0
       - 2.0
     - - 0.0
       - 2.0
     - - 0.0
-      - 6.0
+      - 4.0
 
 truss_env:
   E: 1.93e+11

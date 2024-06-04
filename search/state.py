@@ -2,7 +2,12 @@ import random
 import uuid
 from math import ceil, floor
 
-from search.action import AbstractAction, AddEdgeAction, AddNodeWithEdgeAction
+from search.action import (
+    AbstractAction,
+    AddEdgeAction,
+    AddEdgeWithNewNodeAction,
+    AddNodeWithEdgeAction,
+)
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
 from search.utils import generate_FEA_truss
@@ -38,7 +43,7 @@ class State:
 
     def get_legal_actions(self):
         new_node = self._create_random_node()
-        new_edge = self._create_new_edge()
+        new_edge = self._create_new_edge_for_existing_nodes()
         if new_edge is None:
             return [AddNodeWithEdgeAction(new_node)]
         return [AddNodeWithEdgeAction(new_node), AddEdgeAction(new_edge)]
@@ -49,7 +54,7 @@ class State:
     def truss_holds(self):
         truss = generate_FEA_truss(self.nodes, self.edges)
         try:
-            truss.analyze()
+            truss.analyze(check_statics=True)
             return True
         except Exception:
             return False
@@ -69,7 +74,7 @@ class State:
 
         return Node(id, Vector3(x, y, z))
 
-    def _create_new_edge(self):
+    def _create_new_edge_for_existing_nodes(self):
         if len(self.edges) == len(self.nodes) * (len(self.nodes) - 1) / 2:
             return None
 
@@ -77,6 +82,9 @@ class State:
             u, v = random.sample(self.nodes, 2)
             if not self._edge_exists(u, v):
                 return Edge(str(uuid.uuid4()), u, v)
+
+    def _create_new_edge(self, u, v):
+        return Edge(str(uuid.uuid4()), u, v)
 
     def _edge_exists(self, u, v):
         for edge in self.edges:

@@ -20,7 +20,9 @@ def execute(config_file: str) -> None:
     root = TreeSearchNode(state=state, config=truss_env_config, parent=None)
     mcts = TrussSearchTree(root=root, config=truss_env_config)
     best_child = mcts.best_action(ucts_config.max_iter)
-    best_children = root.best_children(general_config.k)
+    leafs = mcts.get_leafs()
+    leafs.sort(key=lambda x: x.state.total_length())
+    best_children = leafs[: general_config.k]
 
     folder_name = Path(general_config.input_file).stem
     output_path = f"{general_config.output_folder}{folder_name}/"

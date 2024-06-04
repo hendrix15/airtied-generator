@@ -68,7 +68,7 @@ class TreeSearchNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    def best_child(self, c_param=1.4):
+    def best_child(self, c_param=10.4):
         choices_weights = [
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
@@ -125,3 +125,14 @@ class TrussSearchTree:
             else:
                 current_node = current_node.best_child()
         return current_node
+
+    def get_leafs(self):
+        leafs = []
+        stack = [self.root]
+        while stack:
+            node = stack.pop()
+            if node.is_terminal_node():
+                leafs.append(node)
+            else:
+                stack.extend(node.children)
+        return leafs

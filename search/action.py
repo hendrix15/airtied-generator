@@ -20,6 +20,7 @@ class AddNodeWithEdgeAction(AbstractAction):
         new_state = state.deep_copy()
         new_state.add_node(self.node)
         self._add_random_edge(new_state)
+        new_state.iteration += 1
         return new_state
 
     def _add_random_edge(self, state):
@@ -38,4 +39,22 @@ class AddEdgeAction(AbstractAction):
     def execute(self, state):
         new_state = state.deep_copy()
         new_state.add_edge(self.edge)
+        new_state.iteration += 1
+        return new_state
+
+
+class AddEdgeWithNewNodeAction(AbstractAction):
+    def __init__(
+        self,
+        edge: Edge,
+        newNode: Node,
+    ):
+        self.edge = edge
+        self.node = newNode
+
+    def execute(self, state):
+        new_state = state.deep_copy()
+        new_state.add_node(self.node)
+        new_state.add_edge(self.edge)
+        new_state.iteration += 1
         return new_state
