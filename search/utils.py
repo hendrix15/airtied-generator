@@ -1,4 +1,5 @@
 import json
+import os
 
 import plotly.graph_objects as go
 import yaml
@@ -8,8 +9,9 @@ from search.config import Material, SectionProperties
 from search.models import Bool3, Edge, Node, Vector3
 
 
-def read_json(filename: str) -> list[Node]:
+def read_json(filename: str) -> tuple[list[Node], list[Edge]]:
     nodes = []
+    edges = []
     with open(filename) as f:
         data = json.load(f)
         for id, coordinates in data["nodes"].items():
@@ -40,7 +42,32 @@ def read_json(filename: str) -> list[Node]:
             for node_id in force["nodes"]:
                 node = next(node for node in nodes if node.id == node_id)
                 node.load = Vector3(x=force["x"], y=force["y"], z=force["z"])
-    return nodes
+        if "edges" in data:
+            for id, values in data["edges"].items():
+                edges.append(Edge(id, values["start"], values["end"]))
+    return nodes, edges
+
+
+def write_json(
+    dirname: str, filename: str, nodes: list[Node], edges: list[Edge]
+) -> None:
+    os.makedirs(dirname, exist_ok=True)
+    result = {"nodes": {}, "edges": {}, "anchors": {}, "forces": {}}
+    for node in nodes:
+        result["nodes"][node.id] = {"x": node.vec.x, "y": node.vec.y, "z": node.vec.z}
+        if node.r_support and node.t_support:
+            result["anchors"][node.id] = {
+                "rx": node.r_support.x,
+                "ry": node.r_support.y,
+                "rz": node.r_support.z,
+                "tx": node.t_support.x,
+                "ty": node.t_support.y,
+                "tz": node.t_support.z,
+            }
+        for edge in edges:
+            result["edges"][edge.id] = {"start": edge.u.id, "end": edge.v.id}
+    with open(f"{dirname}{filename}", "w") as f:
+        json.dump(result, f)
 
 
 def load_config(filename: str) -> dict:
@@ -103,7 +130,10 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
     return truss
 
 
-def visualize(nodes: list[Node], edges: list[Edge]) -> None:
+def visualize(
+    dirname: str, filename: str, nodes: list[Node], edges: list[Edge]
+) -> None:
+    os.makedirs(dirname, exist_ok=True)
     input_anchors = {
         node.id: (node.vec.x, node.vec.y, node.vec.z)
         for node in nodes
@@ -206,4 +236,4 @@ def visualize(nodes: list[Node], edges: list[Edge]) -> None:
     )
 
     # Show plot
-    fig.show()
+    fig.write_image(f"{dirname}{filename}")

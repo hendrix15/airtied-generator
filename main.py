@@ -1,10 +1,14 @@
+from argparse import ArgumentParser
+
 from search import ucts
 
 
 def main() -> None:
-    ucts.execute(
-        run_id="test", config_file="config/search.yaml", input_file="input/example.json"
-    )
+    parser = ArgumentParser()
+    parser.add_argument("--config_file", type=str, default="config/search.yaml")
+    args = parser.parse_args()
+
+    ucts.execute(config_file=args.config_file)
 
 
 if __name__ == "__main__":
