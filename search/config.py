@@ -19,6 +19,7 @@ class UCTSConfig:
         args = config.get("ucts", {})
         self.max_nodes = args["max_nodes"]
         self.max_iter = args["max_iter"]
+        self.max_iter_per_node = args["max_iter_per_node"]
         self.min_x = args["coordinate_range"][0][0]
         self.max_x = args["coordinate_range"][0][1]
         self.min_y = args["coordinate_range"][1][0]
@@ -53,7 +54,7 @@ class Material:
     """Material used for Finite Element Analysis"""
 
     name = "Steel"
-    e = 199.95  # (GPa) Modulus of elasticity
+    e = 1199.95  # (GPa) Modulus of elasticity
     g = 78.60  # GPa Shear modulus
     nu = 0.30  # Poisson's ratio
     rho = 7833.41  # kg per cubic metre Density

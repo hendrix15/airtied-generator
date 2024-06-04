@@ -6,7 +6,7 @@ from search.action import AbstractAction, AddEdgeAction, AddNodeWithEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
 from search.utils import generate_FEA_truss
-
+import copy
 
 class State:
     def __init__(self, config: UCTSConfig, nodes, edges, iteration=0):
@@ -25,6 +25,11 @@ class State:
             + str(self.eid)
         )
 
+    def deep_copy(
+        self,
+    ):
+        return copy.deepcopy(self)
+
     def add_node(self, node):
         self.nodes.append(node)
 
@@ -39,19 +44,18 @@ class State:
         return [AddNodeWithEdgeAction(new_node), AddEdgeAction(new_edge)]
 
     def move(self, action: AbstractAction):
-        self.iteration += 1
         return action.execute(self)
 
     def truss_holds(self):
         truss = generate_FEA_truss(self.nodes, self.edges)
         try:
-            truss.analyze(check_statics=True)
+            truss.analyze()
             return True
         except Exception:
             return False
 
     def should_stop_search(self):
-        return self.iteration > self.config.max_iter or self.truss_holds()
+        return self.iteration > self.config.max_iter_per_node or self.truss_holds()
 
     def _create_random_node(self):
         min_x, max_x = self.config.min_x, self.config.max_x

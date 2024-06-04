@@ -53,11 +53,10 @@ class TreeSearchNode:
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
-
         return (
             0
             if not current_rollout_state.truss_holds()
-            else 1.0 / self.state.total_length()
+            else (1.0 / self.state.total_length()) / len(self.children)
         )
 
     def backpropagate(self, result):
