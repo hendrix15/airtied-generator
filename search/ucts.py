@@ -16,6 +16,7 @@ def execute(config_file: str) -> None:
     nodes, edges = read_json(general_config.input_file)
 
     state = State(config=ucts_config, nodes=nodes, edges=edges)
+    state.init_fully_connected()
 
     root = TreeSearchNode(state=state, config=truss_env_config, parent=None)
     mcts = TrussSearchTree(root=root, config=truss_env_config)

@@ -19,7 +19,9 @@ class AddNodeAction(AbstractAction):
     def execute(self, state):
         new_state = state.deep_copy()
         new_state.add_node(self.node)
-        new_state.grid_nodes.remove(self.node)
+        new_state.grid_nodes = [
+            node for node in new_state.grid_nodes if node.id != self.node.id
+        ]
         new_state.iteration += 1
         return new_state
 
