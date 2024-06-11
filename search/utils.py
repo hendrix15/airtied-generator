@@ -44,7 +44,9 @@ def read_json(filename: str) -> tuple[list[Node], list[Edge]]:
                 node.load = Vector3(x=force["x"], y=force["y"], z=force["z"])
         if "edges" in data:
             for id, values in data["edges"].items():
-                edges.append(Edge(id, values["start"], values["end"]))
+                u = next(node for node in nodes if node.id == values["start"])
+                v = next(node for node in nodes if node.id == values["end"])
+                edges.append(Edge(id, u, v))
     return nodes, edges
 
 
@@ -64,8 +66,8 @@ def write_json(
                 "ty": node.t_support.y,
                 "tz": node.t_support.z,
             }
-        for edge in edges:
-            result["edges"][edge.id] = {"start": edge.u.id, "end": edge.v.id}
+    for edge in edges:
+        result["edges"][edge.id] = {"start": edge.u.id, "end": edge.v.id}
     with open(f"{dirname}{filename}", "w") as f:
         json.dump(result, f)
 
@@ -150,10 +152,13 @@ def visualize(
         if not node.fixed
     }
 
-    generated_edges = []
-    for edge in edges:
-        generated_edges.append((edge.u.vec.x, edge.u.vec.y, edge.u.vec.z))
-        generated_edges.append((edge.v.vec.x, edge.v.vec.y, edge.v.vec.z))
+    lines = [
+        [
+            (edge.u.vec.x, edge.u.vec.y, edge.u.vec.z),
+            (edge.v.vec.x, edge.v.vec.y, edge.v.vec.z),
+        ]
+        for edge in edges
+    ]
 
     # force_coords = {name: (v["x"], v["y"], v["z"]) for name, v in forces.items()}
     # force_vectors = {name: (v["fx"], v["fy"], v["fz"]) for name, v in forces.items()}
@@ -188,13 +193,17 @@ def visualize(
         textposition="top center",
     )
 
-    scatter_generated_edges = go.Scatter3d(
-        x=[generated_edge[0] for generated_edge in generated_edges],
-        y=[generated_edge[1] for generated_edge in generated_edges],
-        z=[generated_edge[2] for generated_edge in generated_edges],
-        mode="lines",
-        name="lines",
-    )
+    scatter_edges = []
+    for line in lines:
+        scatter_edges.append(
+            go.Scatter3d(
+                x=[line[0][0], line[1][0]],
+                y=[line[0][1], line[1][1]],
+                z=[line[0][2], line[1][2]],
+                mode="lines",
+                name="lines",
+            )
+        )
 
     # Create arrows for force vectors
     # force_arrows = []
@@ -221,8 +230,8 @@ def visualize(
             scatter_input_anchors,
             scatter_input_nodes,
             scatter_other_nodes,
-            scatter_generated_edges,
         ]
+        + scatter_edges
     )
 
     # Set labels
@@ -236,7 +245,6 @@ def visualize(
     )
 
     # Show plot
-    if save:
-        fig.write_image(f"{dirname}{filename}")
-    else:
-        fig.show()
+    fig.show()
+
+    # fig.write_image(f"{dirname}{filename}")
