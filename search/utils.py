@@ -1,4 +1,5 @@
 import json
+import math
 import os
 
 import plotly.graph_objects as go
@@ -249,3 +250,9 @@ def visualize(
         fig.write_image(f"{dirname}{filename}")
     else:
         fig.show()
+
+
+def get_euler_load(l: float) -> float:
+    g = 9.81  # gravitational acceleration
+    w = 35  # load-bearing capacity for a beam with 1m length in kg
+    return (w * g) / math.pow(l, 2)
