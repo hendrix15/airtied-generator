@@ -47,3 +47,23 @@ def execute(config_file: str) -> None:
     #     write_json(output_file, nodes=result["nodes"], edges=result["edges"])
     # except Exception:
     #     raise Exception("Truss is not stable")
+
+
+def test_initial_state(config_file: str) -> None:
+    config = load_config(config_file)
+    general_config = GeneralConfig(config)
+    ucts_config = UCTSConfig(config)
+    truss_env_config = TrussEnvironmentConfig(config)
+
+    nodes, edges = read_json(general_config.input_file)
+
+    state = State(config=ucts_config, nodes=nodes, edges=edges)
+    state.init_fully_connected()
+    root = TreeSearchNode(state=state, config=truss_env_config, parent=None)
+    visualize(
+        dirname="initial_state",
+        filename="initial_state.png",
+        nodes=root.state.nodes,
+        edges=root.state.edges,
+        save=False,
+    )

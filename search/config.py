@@ -26,6 +26,9 @@ class UCTSConfig:
         self.max_y = args["coordinate_range"][1][1]
         self.min_z = args["coordinate_range"][2][0]
         self.max_z = args["coordinate_range"][2][1]
+        self.grid_density_unit = args["grid_density_unit"]
+        self.num_neighbors = args["num_neighbors"]
+        self.clamp_tolerance = args["clamp_tolerance"]
 
 
 class TrussEnvironmentConfig:

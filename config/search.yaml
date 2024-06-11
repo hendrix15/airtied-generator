@@ -6,7 +6,7 @@ general:
 
 ucts:
   max_nodes: 7
-  max_iter: 100
+  max_iter: 300
   max_iter_per_node: 40
   coordinate_range:
     - - 0.0
@@ -15,7 +15,9 @@ ucts:
       - 2.0
     - - 0.0
       - 4.0
-
+  grid_density_unit: 0.5
+  num_neighbors: 6
+  clamp_tolerance: 0.1
 truss_env:
   E: 1.93e+11
   pho: 8.0e+3

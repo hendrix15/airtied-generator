@@ -131,7 +131,7 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
 
 
 def visualize(
-    dirname: str, filename: str, nodes: list[Node], edges: list[Edge]
+    dirname: str, filename: str, nodes: list[Node], edges: list[Edge], save: bool = True
 ) -> None:
     os.makedirs(dirname, exist_ok=True)
     input_anchors = {
@@ -164,7 +164,7 @@ def visualize(
         z=[input_anchors[name][2] for name in input_anchors],
         mode="markers+text",
         marker=dict(size=5, color="blue"),
-        text=list(input_anchors.keys()),
+        # text=list(input_anchors.keys()),
         textposition="top center",
     )
 
@@ -174,7 +174,7 @@ def visualize(
         z=[input_nodes[name][2] for name in input_nodes],
         mode="markers+text",
         marker=dict(size=5, color="green"),
-        text=list(input_nodes.keys()),
+        # text=list(input_nodes.keys()),
         textposition="top center",
     )
 
@@ -184,7 +184,7 @@ def visualize(
         z=[other_nodes[name][2] for name in other_nodes],
         mode="markers+text",
         marker=dict(size=5, color="red"),
-        text=list(other_nodes.keys()),
+        # text=list(other_nodes.keys()),
         textposition="top center",
     )
 
@@ -236,4 +236,7 @@ def visualize(
     )
 
     # Show plot
-    fig.write_image(f"{dirname}{filename}")
+    if save:
+        fig.write_image(f"{dirname}{filename}")
+    else:
+        fig.show()
