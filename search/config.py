@@ -56,17 +56,17 @@ class TrussEnvironmentConfig:
 class Material:
     """Material used for Finite Element Analysis"""
 
-    name = "Steel"
-    e = 1199.95  # (GPa) Modulus of elasticity
-    g = 78.60  # GPa Shear modulus
-    nu = 0.30  # Poisson's ratio
-    rho = 7833.41  # kg per cubic metre Density
+    name = "Custom"
+    e = 1  # (ksi) Modulus of elasticity
+    g = 1  # (ksi) Shear modulus
+    nu = 1  # Poisson's ratio
+    rho = 1  # (kci) Density
 
 
 class SectionProperties:
     """Section Properties used for Finite Element Analysis"""
 
-    iy = 0.0000072  # (m**4) Weak axis moment of inertia
-    iz = 0.000085  # (m**4) Strong axis moment of inertia
-    j = 1.249e-7  # (m**4) Torsional constant
-    a = 0.0049  # (m**2) Cross-sectional area
+    iy = 1  # (in**4) Weak axis moment of inertia
+    iz = 1  # (in**4) Strong axis moment of inertia
+    j = 1  # (in**4) Torsional constant
+    a = 1  # (in**2) Cross-sectional area
