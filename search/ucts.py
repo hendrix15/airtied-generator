@@ -25,8 +25,8 @@ def execute(config_file: str) -> None:
     folder_name = Path(general_config.input_file).stem
     output_path = f"{general_config.output_folder}{folder_name}/"
     image_path = f"{general_config.image_folder}{folder_name}/"
-    shutil.rmtree(output_path)
-    shutil.rmtree(image_path)
+    shutil.rmtree(output_path, ignore_errors=True)
+    shutil.rmtree(image_path, ignore_errors=True)
 
     for i, child in enumerate(best_children):
         nodes = [node for node in child.state.nodes]
