@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-
+import random
 from search.models import Edge, Node
-
+import uuid
 
 class AbstractAction(ABC):
     @abstractmethod
@@ -9,18 +9,22 @@ class AbstractAction(ABC):
         pass
 
 
-class AddNodeAction(AbstractAction):
+class AddNodeWithEdgeAction(AbstractAction):
     def __init__(
         self,
         newNode: Node,
-        e_id=0,
     ):
         self.node = newNode
-        self.e_id = e_id
 
     def execute(self, state):
         state.add_node(self.node)
+        self._add_random_edge(state)
         return state
+
+    def _add_random_edge(self, state):
+        existing_node = random.choice(state.nodes)
+        edge = Edge(str(uuid.uuid4()), self.node, existing_node)
+        state.add_edge(edge)
 
 
 class AddEdgeAction(AbstractAction):

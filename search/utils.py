@@ -1,44 +1,75 @@
 import json
+import os
 
 import plotly.graph_objects as go
 import yaml
 from PyNite import FEModel3D
 
 from search.config import Material, SectionProperties
-from search.models import Edge, Node, Vector3
+from search.models import Bool3, Edge, Node, Vector3
 
 
-def read_json(filename: str) -> list[Node]:
+def read_json(filename: str) -> tuple[list[Node], list[Edge]]:
     nodes = []
+    edges = []
     with open(filename) as f:
         data = json.load(f)
-        for id, coordinates in data["anchors"].items():
-            nodes.append(
-                Node(
-                    id=id,
-                    vec=Vector3(
-                        x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
-                    ),
-                    support=True,
-                    fixed=True,
-                )
-            )
         for id, coordinates in data["nodes"].items():
-            nodes.append(
-                Node(
-                    id=id,
-                    vec=Vector3(
-                        x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
-                    ),
-                    support=False,
-                    fixed=True,
+            if id in data["anchors"]:
+                anchor = data["anchors"][id]
+                nodes.append(
+                    Node(
+                        id=id,
+                        vec=Vector3(
+                            x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
+                        ),
+                        r_support=Bool3(x=anchor["rx"], y=anchor["ry"], z=anchor["rz"]),
+                        t_support=Bool3(x=anchor["tx"], y=anchor["ty"], z=anchor["tz"]),
+                        fixed=True,
+                    )
                 )
-            )
+            else:
+                nodes.append(
+                    Node(
+                        id=id,
+                        vec=Vector3(
+                            x=coordinates["x"], y=coordinates["y"], z=coordinates["z"]
+                        ),
+                        fixed=True,
+                    )
+                )
         for id, force in data["forces"].items():
             for node_id in force["nodes"]:
                 node = next(node for node in nodes if node.id == node_id)
                 node.load = Vector3(x=force["x"], y=force["y"], z=force["z"])
-    return nodes
+        if "edges" in data:
+            for id, values in data["edges"].items():
+                u = next(node for node in nodes if node.id == values["start"])
+                v = next(node for node in nodes if node.id == values["end"])
+                edges.append(Edge(id, u, v))
+    return nodes, edges
+
+
+def write_json(
+    dirname: str, filename: str, nodes: list[Node], edges: list[Edge]
+) -> None:
+    os.makedirs(dirname, exist_ok=True)
+    result = {"nodes": {}, "edges": {}, "anchors": {}, "forces": {}}
+    for node in nodes:
+        result["nodes"][node.id] = {"x": node.vec.x, "y": node.vec.y, "z": node.vec.z}
+        if node.r_support and node.t_support:
+            result["anchors"][node.id] = {
+                "rx": node.r_support.x,
+                "ry": node.r_support.y,
+                "rz": node.r_support.z,
+                "tx": node.t_support.x,
+                "ty": node.t_support.y,
+                "tz": node.t_support.z,
+            }
+    for edge in edges:
+        result["edges"][edge.id] = {"start": edge.u.id, "end": edge.v.id}
+    with open(f"{dirname}{filename}", "w") as f:
+        json.dump(result, f)
 
 
 def load_config(filename: str) -> dict:
@@ -53,8 +84,16 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
 
     for node in nodes:
         truss.add_node(node.id, node.vec.x, node.vec.y, node.vec.z)
-        if node.support:
-            truss.def_support(node.id, True, True, True, True, True, True)
+        if node.r_support and node.t_support:
+            truss.def_support(
+                node.id,
+                node.t_support.x,
+                node.t_support.y,
+                node.t_support.z,
+                node.r_support.x,
+                node.r_support.y,
+                node.r_support.z,
+            )
         if node.load:
             if node.load.x != 0:
                 truss.add_node_load(node.id, "FX", node.load.x)
@@ -74,7 +113,6 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
             SectionProperties.j,
             SectionProperties.a,
         )
-        # do we have to release all edges??
         truss.def_releases(
             edge.id,
             False,
@@ -94,16 +132,19 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
     return truss
 
 
-def visualize(nodes: list[Node], edges: list[Edge]) -> None:
+def visualize(
+    dirname: str, filename: str, nodes: list[Node], edges: list[Edge]
+) -> None:
+    os.makedirs(dirname, exist_ok=True)
     input_anchors = {
         node.id: (node.vec.x, node.vec.y, node.vec.z)
         for node in nodes
-        if node.fixed and node.support
+        if node.fixed and node.r_support and node.t_support
     }
     input_nodes = {
         node.id: (node.vec.x, node.vec.y, node.vec.z)
         for node in nodes
-        if node.fixed and not node.support
+        if node.fixed and not node.r_support and not node.t_support
     }
     other_nodes = {
         node.id: (node.vec.x, node.vec.y, node.vec.z)
@@ -197,4 +238,4 @@ def visualize(nodes: list[Node], edges: list[Edge]) -> None:
     )
 
     # Show plot
-    fig.show()
+    fig.write_image(f"{dirname}{filename}")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 
 class Vector3:
     def __init__(self, x: float = 0.0, y: float = 0.0, z: float = 0.0) -> None:
@@ -48,18 +49,27 @@ class Vector3:
             return False
 
 
+class Bool3:
+    def __init__(self, x: bool = False, y: bool = False, z: bool = False) -> None:
+        self.x = x
+        self.y = y
+        self.z = z
+
+
 class Node:
     def __init__(
         self,
         id: str,
         vec: Vector3,
-        support: bool = False,
+        r_support: Bool3 | None = None,
+        t_support: Bool3 | None = None,
         load: Vector3 | None = None,
         fixed: bool = False,
     ) -> None:
         self.id = id
         self.vec = vec
-        self.support = support
+        self.r_support = r_support
+        self.t_support = t_support
         self.load = load
         self.fixed = fixed
 
@@ -67,12 +77,22 @@ class Node:
         return {
             "id": self.id,
             "vec": {"x": self.vec.x, "y": self.vec.y, "z": self.vec.z},
-            "support": self.support,
+            "r_support": (
+                {"x": self.r_support.x, "y": self.r_support.y, "z": self.r_support.z}
+                if self.r_support
+                else None
+            ),
+            "t_support": (
+                {"x": self.t_support.x, "y": self.t_support.y, "z": self.t_support.z}
+                if self.t_support
+                else None
+            ),
             "load": (
                 {"x": self.load.x, "y": self.load.y, "z": self.load.z}
                 if self.load
                 else None
             ),
+            "fixed": self.fixed,
         }
 
 
@@ -84,3 +104,10 @@ class Edge:
 
     def get_json(self) -> dict:
         return {"id": self.id, "u": self.u.id, "v": self.v.id}
+
+    def length(self) -> float:
+        p1 = np.array([self.u.vec.x, self.u.vec.y, self.u.vec.z])
+        p2 = np.array([self.v.vec.x, self.v.vec.y, self.v.vec.z])
+
+        squared_dist = np.sum((p1 - p2) ** 2, axis=0)
+        return np.sqrt(squared_dist)

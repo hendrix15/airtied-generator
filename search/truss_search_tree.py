@@ -18,7 +18,7 @@ class TreeSearchNode:
         self.state = state
         self.parent = parent
         self._number_of_visits = 0.0
-        self._results = defaultdict(int)
+        self._result = 0.0
         self._untried_actions = None
         self.config = config
         self.children = []
@@ -31,9 +31,7 @@ class TreeSearchNode:
 
     @property
     def q(self):
-        holding_trusses = self._results[self.parent.state.truss_holds()]
-        breaking_trusses = self._results[not self.parent.state.truss_holds()]
-        return holding_trusses - breaking_trusses
+        return self._result
 
     @property
     def n(self):
@@ -55,11 +53,16 @@ class TreeSearchNode:
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
-        return current_rollout_state.truss_holds()
+
+        return (
+            0
+            if not current_rollout_state.truss_holds()
+            else 1.0 / self.state.total_length()
+        )
 
     def backpropagate(self, result):
         self._number_of_visits += 1.0
-        self._results[result] += 1.0
+        self._result += result
         if self.parent:
             self.parent.backpropagate(result)
 
@@ -72,6 +75,12 @@ class TreeSearchNode:
             for c in self.children
         ]
         return self.children[np.argmax(choices_weights)]
+
+    def best_children(self, n):
+        choices_weights = [
+            (c.q / c.n) + np.sqrt((2 * np.log(self.n) / c.n)) for c in self.children
+        ]
+        return [self.children[i] for i in np.argsort(choices_weights)[-n:]]
 
     def rollout_policy(self, possible_moves):
         return possible_moves[np.random.randint(len(possible_moves))]
