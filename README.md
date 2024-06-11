@@ -22,6 +22,14 @@ poetry env use python3.11
 poetry install
 ```
 
+## Pipeline
+
+Start the pipeline
+
+```sh
+python main.py
+```
+
 ## Representation
 
 We are using JSON files to represent inputs (anchors and forces) and trusses (name?, vertices and edges).
