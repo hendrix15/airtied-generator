@@ -44,7 +44,9 @@ def read_json(filename: str) -> tuple[list[Node], list[Edge]]:
                 node.load = Vector3(x=force["x"], y=force["y"], z=force["z"])
         if "edges" in data:
             for id, values in data["edges"].items():
-                edges.append(Edge(id, values["start"], values["end"]))
+                u = next(node for node in nodes if node.id == values["start"])
+                v = next(node for node in nodes if node.id == values["end"])
+                edges.append(Edge(id, u, v))
     return nodes, edges
 
 
@@ -64,8 +66,8 @@ def write_json(
                 "ty": node.t_support.y,
                 "tz": node.t_support.z,
             }
-        for edge in edges:
-            result["edges"][edge.id] = {"start": edge.u.id, "end": edge.v.id}
+    for edge in edges:
+        result["edges"][edge.id] = {"start": edge.u.id, "end": edge.v.id}
     with open(f"{dirname}{filename}", "w") as f:
         json.dump(result, f)
 
