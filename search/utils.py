@@ -245,6 +245,7 @@ def visualize(
     )
 
     # Show plot
-    fig.show()
-
-    # fig.write_image(f"{dirname}{filename}")
+    if save:
+        fig.write_image(f"{dirname}{filename}")
+    else:
+        fig.show()

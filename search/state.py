@@ -6,7 +6,7 @@ from search.action import (
     AbstractAction,
     AddEdgeAction,
     AddEdgeWithNewNodeAction,
-    AddNodeWithEdgeAction,
+    AddNodeAction,
 )
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
@@ -21,6 +21,7 @@ class State:
         self.edges = edges
         self.iteration = iteration
         self.config = config
+        self.grid_nodes = []
 
     def __str__(self):
         return (
@@ -45,11 +46,11 @@ class State:
             self.edges.append(edge)
 
     def get_legal_actions(self):
-        new_node = self._create_random_node()
-        new_edge = self._create_new_edge_for_existing_nodes()
-        if new_edge is None:
-            return [AddNodeWithEdgeAction(new_node)]
-        return [AddNodeWithEdgeAction(new_node), AddEdgeAction(new_edge)]
+
+        node_actions = [AddNodeAction(node) for node in self.grid_nodes]
+        edge_actions = [AddEdgeAction(edge) for edge in self._get_free_edges()]
+
+        return node_actions + edge_actions
 
     def move(self, action: AbstractAction):
         return action.execute(self)
@@ -105,11 +106,11 @@ class State:
             clamp_tolerance=self.config.clamp_tolerance,
         )
         for point in free_joints_points:
-            self.add_node(
+            self.grid_nodes.append(
                 Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
             )
 
-        self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
+        # self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
 
     def is_point_in_hull(self, point, hull):
         new_hull = ConvexHull(np.vstack((hull.points, point)))
@@ -218,3 +219,12 @@ class State:
         ]
         for edge in our_edges:
             self.add_edge(edge)
+
+    def _get_free_edges(self):
+        free_edges = []
+        for i in range(len(self.nodes)):
+            for j in range(i + 1, len(self.nodes)):
+                if not self._edge_exists(self.nodes[i], self.nodes[j]):
+                    edge = Edge(str(uuid.uuid4()), self.nodes[i], self.nodes[j])
+                    free_edges.append(edge)
+        return free_edges

@@ -9,6 +9,21 @@ class AbstractAction(ABC):
         pass
 
 
+class AddNodeAction(AbstractAction):
+    def __init__(
+        self,
+        newNode: Node,
+    ):
+        self.node = newNode
+
+    def execute(self, state):
+        new_state = state.deep_copy()
+        new_state.add_node(self.node)
+        new_state.grid_nodes.remove(self.node)
+        new_state.iteration += 1
+        return new_state
+
+
 class AddNodeWithEdgeAction(AbstractAction):
     def __init__(
         self,
