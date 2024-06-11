@@ -1,19 +1,20 @@
+import copy
 import random
 import uuid
 from math import ceil, floor
 
+import numpy as np
+from scipy.spatial import ConvexHull, distance_matrix
+
 from search.action import (
     AbstractAction,
     AddEdgeAction,
-    AddEdgeWithNewNodeAction,
     AddNodeAction,
 )
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from search.utils import generate_FEA_truss
-import copy
-import numpy as np
-from scipy.spatial import ConvexHull, distance_matrix
+from search.utils import generate_FEA_truss, get_euler_load
+
 
 class State:
     def __init__(self, config: UCTSConfig, nodes, edges, iteration=0):
@@ -46,7 +47,6 @@ class State:
             self.edges.append(edge)
 
     def get_legal_actions(self):
-
         node_actions = [AddNodeAction(node) for node in self.grid_nodes]
         edge_actions = [AddEdgeAction(edge) for edge in self._get_free_edges()]
 
@@ -59,9 +59,20 @@ class State:
         truss = generate_FEA_truss(self.nodes, self.edges)
         try:
             truss.analyze(check_statics=True)
-            return True
+            max_forces = {
+                member.name: member.max_axial() for member in truss.Members.values()
+            }
+            for edge in self.edges:
+                max_force = max_forces[edge.id]
+                euler_load = get_euler_load(edge.length())
+                if max_force > euler_load:
+                    print(
+                        f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
+                    )
+                    return False
         except Exception:
             return False
+        return True
 
     def should_stop_search(self):
         return self.iteration > self.config.max_iter_per_node or self.truss_holds()

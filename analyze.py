@@ -1,16 +1,9 @@
-import math
 from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
 
 from search.models import Edge, Node
-from search.utils import generate_FEA_truss, read_json
-
-
-def get_euler_load(l: float) -> float:
-    g = 9.81  # gravitational acceleration
-    w = 35  # load-bearing capacity for a beam with 1m length in kg
-    return (w * g) / math.pow(l, 2)
+from search.utils import generate_FEA_truss, get_euler_load, read_json
 
 
 def visualize(
