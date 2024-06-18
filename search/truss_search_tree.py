@@ -4,6 +4,7 @@ import numpy as np
 
 from search.config import TrussEnvironmentConfig
 from search.state import State
+from utils.plot import visualize
 
 
 class TreeSearchNode:
@@ -66,7 +67,7 @@ class TreeSearchNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    def best_child(self, c_param=1.4):
+    def best_child(self, c_param=1.3):
         choices_weights = [
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
@@ -101,10 +102,17 @@ class TrussSearchTree:
 
         """
 
-        for _ in range(0, simulations_number):
+        for simulation in range(0, simulations_number):
             v = self._tree_policy()
             reward = v.rollout()
             v.backpropagate(reward)
+            if simulation % 100 == 0:
+                visualize(
+                    nodes=v.state.nodes,
+                    edges=v.state.edges,
+                    dirname="output/run/",
+                    filename=f"{simulation}.png",
+                )
         # to select best child go for exploitation only
         return self.root.best_child(c_param=0.0)
 

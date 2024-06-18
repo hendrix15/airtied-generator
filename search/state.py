@@ -56,7 +56,7 @@ class State:
     def truss_holds(self):
         truss = generate_FEA_truss(self.nodes, self.edges)
         try:
-            truss.analyze(check_statics=True)
+            truss.analyze(check_statics=True, check_stability=False)
             max_forces = {
                 member.name: member.max_axial() for member in truss.Members.values()
             }
