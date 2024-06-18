@@ -68,7 +68,8 @@ class State:
                         f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
                     )
                     return False
-        except Exception:
+        except Exception as e:
+            print(e)
             return False
         return True
 
@@ -117,7 +118,7 @@ class State:
             clamp_tolerance=self.config.clamp_tolerance,
         )
         for point in free_joints_points:
-            self.grid_nodes.append(
+            self.nodes.append(
                 Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
             )
 

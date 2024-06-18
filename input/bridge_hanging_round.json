@@ -34,33 +34,33 @@
   },
   "anchors": {
     "anchor1": {
-      "rx": false,
-      "ry": false,
-      "rz": false,
+      "rx": true,
+      "ry": true,
+      "rz": true,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "anchor2": {
-      "rx": false,
-      "ry": false,
-      "rz": false,
+      "rx": true,
+      "ry": true,
+      "rz": true,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "anchor3": {
-      "rx": false,
-      "ry": false,
-      "rz": false,
+      "rx": true,
+      "ry": true,
+      "rz": true,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "anchor4": {
-      "rx": false,
-      "ry": false,
-      "rz": false,
+      "rx": true,
+      "ry": true,
+      "rz": true,
       "tx": true,
       "ty": true,
       "tz": true

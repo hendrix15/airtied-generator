@@ -18,6 +18,13 @@ def execute(config_file: str) -> None:
     state = State(config=ucts_config, nodes=nodes, edges=edges)
     state.init_fully_connected()
 
+    visualize(
+        dirname="bro.png",
+        filename=f"1.png",
+        nodes=state.nodes,
+        edges=state.edges,
+        save=False,
+    )
     root = TreeSearchNode(state=state, config=truss_env_config, parent=None)
     mcts = TrussSearchTree(root=root, config=truss_env_config)
     best_child = mcts.best_action(ucts_config.max_iter)
