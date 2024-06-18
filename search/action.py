@@ -60,6 +60,20 @@ class AddEdgeAction(AbstractAction):
         return new_state
 
 
+class RemoveEdgeAction(AbstractAction):
+    def __init__(
+        self,
+        edge: Edge,
+    ):
+        self.edge = edge
+
+    def execute(self, state):
+        new_state = state.deep_copy()
+        new_state.edges = [edge for edge in new_state.edges if edge.id != self.edge.id]
+        new_state.iteration += 1
+        return new_state
+
+
 class AddEdgeWithNewNodeAction(AbstractAction):
     def __init__(
         self,

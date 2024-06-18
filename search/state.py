@@ -6,11 +6,7 @@ from math import ceil, floor
 import numpy as np
 from scipy.spatial import ConvexHull, distance_matrix
 
-from search.action import (
-    AbstractAction,
-    AddEdgeAction,
-    AddNodeAction,
-)
+from search.action import AbstractAction, AddEdgeAction, AddNodeAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
 from search.utils import generate_FEA_truss, get_euler_load
@@ -46,11 +42,13 @@ class State:
         if not self._edge_exists(edge.u, edge.v):
             self.edges.append(edge)
 
-    def get_legal_actions(self):
-        node_actions = [AddNodeAction(node) for node in self.grid_nodes]
-        edge_actions = [AddEdgeAction(edge) for edge in self._get_free_edges()]
+    # def get_legal_actions(self):
+    #     node_actions = [AddNodeAction(node) for node in self.grid_nodes]
+    #     edge_actions = [AddEdgeAction(edge) for edge in self._get_free_edges()]
 
-        return node_actions + edge_actions
+    #     return node_actions + edge_actions
+    def get_legal_actions(self):
+        return [RemoveEdgeAction(edge) for edge in self.edges]
 
     def move(self, action: AbstractAction):
         return action.execute(self)
@@ -75,7 +73,7 @@ class State:
         return True
 
     def should_stop_search(self):
-        return self.iteration > self.config.max_iter_per_node or self.truss_holds()
+        return self.iteration > self.config.max_iter_per_node or not self.truss_holds()
 
     def _create_random_node(self):
         min_x, max_x = self.config.min_x, self.config.max_x
@@ -103,7 +101,9 @@ class State:
 
     def _edge_exists(self, u, v):
         for edge in self.edges:
-            if (edge.u == u and edge.v == v) or (edge.u == v and edge.v == u):
+            if (edge.u.id == u.id and edge.v.id == v.id) or (
+                edge.u.id == v.id and edge.v.id == u.id
+            ):
                 return True
         return False
 
@@ -121,7 +121,7 @@ class State:
                 Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
             )
 
-        # self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
+        self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
 
     def is_point_in_hull(self, point, hull):
         new_hull = ConvexHull(np.vstack((hull.points, point)))

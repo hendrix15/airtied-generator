@@ -45,7 +45,7 @@ class TreeSearchNode:
         return child_node
 
     def is_terminal_node(self):
-        return self.state.truss_holds()
+        return not self.state.truss_holds()
 
     def rollout(self):
         current_rollout_state = self.state
@@ -68,7 +68,7 @@ class TreeSearchNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    def best_child(self, c_param=10.4):
+    def best_child(self, c_param=1.4):
         choices_weights = [
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
