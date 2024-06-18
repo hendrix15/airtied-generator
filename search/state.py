@@ -5,7 +5,7 @@ from math import ceil, floor
 from search.action import AbstractAction, AddEdgeAction, AddNodeWithEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from search.utils import generate_FEA_truss
+from utils.fea import generate_FEA_truss
 
 
 class State:

@@ -4,7 +4,9 @@ from pathlib import Path
 from search.config import GeneralConfig, TrussEnvironmentConfig, UCTSConfig
 from search.state import State
 from search.truss_search_tree import TreeSearchNode, TrussSearchTree
-from search.utils import load_config, read_json, visualize, write_json
+from search.utils import load_config
+from utils.parser import read_json, write_json
+from utils.plot import visualize
 
 
 def execute(config_file: str) -> None:
@@ -28,19 +30,13 @@ def execute(config_file: str) -> None:
     shutil.rmtree(output_path, ignore_errors=True)
     shutil.rmtree(image_path, ignore_errors=True)
 
-    for i, child in enumerate(best_children):
-        nodes = [node for node in child.state.nodes]
-        edges = [edge for edge in child.state.edges]
-        write_json(dirname=output_path, filename=f"{i}.json", nodes=nodes, edges=edges)
-        visualize(dirname=image_path, filename=f"{i}.png", nodes=nodes, edges=edges)
+    # Store and print only best child
+    write_json(nodes=nodes, edges=edges, dirname=output_path, filename="0.json")
+    visualize(nodes=nodes, edges=edges)
 
-    # truss = generate_FEA_truss(nodes=result["nodes"], edges=result["edges"])
-    # try:
-    #     truss.analyze(check_statics=True)
-    #     for members in truss.Members.values():
-    #         print(
-    #             f"Member {members.name} calculated axial force: {members.max_axial()}"
-    #         )
-    #     write_json(output_file, nodes=result["nodes"], edges=result["edges"])
-    # except Exception:
-    #     raise Exception("Truss is not stable")
+    # Store and print best k children
+    # for i, child in enumerate(best_children):
+    #     nodes = [node for node in child.state.nodes]
+    #     edges = [edge for edge in child.state.edges]
+    #     write_json(nodes=nodes, edges=edges, dirname=output_path, filename=f"{i}.json")
+    #     visualize(nodes=nodes, edges=edges, dirname=image_path, filename=f"{i}.png")

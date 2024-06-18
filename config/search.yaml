@@ -1,5 +1,5 @@
 general:
-  input_file: "input/example.json"
+  input_file: "input/tower.json"
   output_folder: "output/"
   image_folder: "images/"
   k: 10
