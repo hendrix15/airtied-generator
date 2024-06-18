@@ -70,6 +70,21 @@ class RemoveEdgeAction(AbstractAction):
     def execute(self, state):
         new_state = state.deep_copy()
         new_state.edges = [edge for edge in new_state.edges if edge.id != self.edge.id]
+        # remove node if it is not connected to any edge
+        if not any(
+            [edge for edge in new_state.edges if edge.u.id == self.edge.u.id]
+        ):
+            new_state.nodes = [
+                node for node in new_state.nodes if node.id != self.edge.u.id
+            ]
+
+        if not any(
+            [edge for edge in new_state.edges if edge.v.id == self.edge.v.id]
+        ):
+            new_state.nodes = [
+                node for node in new_state.nodes if node.id != self.edge.v.id
+            ]
+            
         new_state.iteration += 1
         return new_state
 

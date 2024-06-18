@@ -218,18 +218,12 @@ class State:
         dist_matrix = distance_matrix(nodes, nodes)
         np.fill_diagonal(dist_matrix, np.inf)  # Avoid zero distance to self
 
-        edges = []
         for i in range(len(nodes)):
             # Find the indices of the nearest neighbors
             nearest_neighbors = np.argsort(dist_matrix[i])[:num_neighbors]
             for neighbor in nearest_neighbors:
-                edges.append((i, neighbor))
-
-        our_edges = [
-            Edge(str(uuid.uuid4()), self.nodes[i], self.nodes[j]) for i, j in edges
-        ]
-        for edge in our_edges:
-            self.add_edge(edge)
+                if not self._edge_exists(self.nodes[i], self.nodes[neighbor]):
+                    self.add_edge(Edge(str(uuid.uuid4()), self.nodes[i], self.nodes[neighbor]))
 
     def _get_free_edges(self):
         free_edges = []
