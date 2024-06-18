@@ -38,10 +38,11 @@ def read_json(filename: str) -> tuple[list[Node], list[Edge]]:
                         fixed=True,
                     )
                 )
-        for id, force in data["forces"].items():
-            for node_id in force["nodes"]:
-                node = next(node for node in nodes if node.id == node_id)
-                node.load = Vector3(x=force["x"], y=force["y"], z=force["z"])
+        if "forces" in data:
+            for id, force in data["forces"].items():
+                for node_id in force["nodes"]:
+                    node = next(node for node in nodes if node.id == node_id)
+                    node.load = Vector3(x=force["x"], y=force["y"], z=force["z"])
         if "edges" in data:
             for id, values in data["edges"].items():
                 u = next(node for node in nodes if node.id == values["start"])
@@ -128,6 +129,12 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
             True,
             True,
         )
+
+    for member in truss.Members.values():
+        # 110g per m for d=0,2m beam = 1.08N
+        # 275g per m for d=0,5m beam = 2.7N
+        self_weight = 1.08
+        truss.add_member_dist_load(member.name, "FY", self_weight, self_weight)
 
     return truss
 
