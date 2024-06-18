@@ -9,7 +9,7 @@ from scipy.spatial import ConvexHull, distance_matrix
 from search.action import AbstractAction, AddEdgeAction, AddNodeAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from search.utils import generate_FEA_truss, get_euler_load
+from utils.fea import generate_FEA_truss, get_euler_load
 
 
 class State:

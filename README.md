@@ -30,6 +30,20 @@ Start the pipeline
 python main.py
 ```
 
+## Helper
+
+Convert an obj truss into the used json format
+
+```sh
+python convert.py --input dino.obj --output dino.json
+```
+
+Analyze an existing truss structure
+
+```sh
+python analyze.py --input output/dino.json
+```
+
 ## Representation
 
 We are using JSON files to represent inputs (anchors and forces) and trusses (name?, vertices and edges).

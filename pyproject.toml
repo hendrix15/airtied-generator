@@ -2,7 +2,12 @@
 name = "airtied-generator"
 version = "0.1.0"
 description = ""
-authors = ["Hoang-An Nguyen <hoangan.nguyen@student.hpi.de>", "Hendrik Woelert <hendrik.woelert@student.hpi.de>", "Maximilian Franz <maximilian.franz@student.hpi.de>", "Stefan Spangenberg <stefan.spangenberg@student.hpi.de>"]
+authors = [
+    "Hoang-An Nguyen <hoangan.nguyen@student.hpi.de>",
+    "Hendrik Woelert <hendrik.woelert@student.hpi.de>",
+    "Maximilian Franz <maximilian.franz@student.hpi.de>",
+    "Stefan Spangenberg <stefan.spangenberg@student.hpi.de>",
+]
 readme = "README.md"
 package-mode = false
 
@@ -10,20 +15,13 @@ package-mode = false
 python = "^3.11"
 pyyaml = "^6.0.1"
 plotly = "^5.22.0"
-networkx = "^3.3"
+matplotlib = "^3.9.0"
+numpy = "1.26.4"
+pynitefea = "^0.0.94"
+scipy = "^1.13.1"
 
 [tool.poetry.group.dev.dependencies]
-scipy = "^1.13.0"
-numpy = "^1.26.4"
-pynitefea = "^0.0.93"
-ipython = "^8.23.0"
-vtk = "^9.3.0"
-torch = "^2.2.2"
 ruff = "^0.4.4"
-
-[tool.poetry.scripts]
-generate-training-data = "training_data.generate:run"
-generate-truss="pipeline:main"
 
 [build-system]
 requires = ["poetry-core"]
