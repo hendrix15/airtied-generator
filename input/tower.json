@@ -1,5 +1,5 @@
 {
-  "name": "Example Tower 1",
+  "name": "Simple Tower",
   "nodes": {
     "anchor1": {
       "x": 0,
@@ -13,39 +13,13 @@
     },
     "anchor3": {
       "x": 1,
-      "y": 1.73,
-      "z": 0
+      "y": 0,
+      "z": 2
     },
-    "apex": {
+    "node1": {
       "x": 1,
-      "y": 0.577,
-      "z": 6
-    }
-  },
-  "edges": {
-    "A": {
-      "start": "anchor1",
-      "end": "anchor2"
-    },
-    "B": {
-      "start": "anchor2",
-      "end": "anchor3"
-    },
-    "C": {
-      "start": "anchor3",
-      "end": "anchor1"
-    },
-    "D": {
-      "start": "anchor1",
-      "end": "apex"
-    },
-    "E": {
-      "start": "anchor2",
-      "end": "apex"
-    },
-    "F": {
-      "start": "anchor3",
-      "end": "apex"
+      "y": 6,
+      "z": 1
     }
   },
   "anchors": {
@@ -75,11 +49,13 @@
     }
   },
   "forces": {
-    "apex_load": {
-      "nodes": ["apex"],
+    "5kg_6m_high": {
+      "nodes": [
+        "node1"
+      ],
       "x": 0,
-      "y": 0,
-      "z": -49
+      "y": -49,
+      "z": 0
     }
   }
 }
