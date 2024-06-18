@@ -1,24 +1,35 @@
 {
+  "name": "Bridge Hanging Round",
   "nodes": {
     "anchor1": {
       "x": 0,
-      "y": 0,
+      "y": 5,
       "z": 0
     },
     "anchor2": {
-      "x": 2,
-      "y": 0,
-      "z": 0
+      "x": 0,
+      "y": 5,
+      "z": 2
     },
     "anchor3": {
-      "x": 1,
-      "y": 2,
+      "x": 10,
+      "y": 5,
       "z": 0
     },
-    "node1": {
-      "x": 1,
-      "y": 1,
-      "z": 4
+    "anchor4": {
+      "x": 10,
+      "y": 5,
+      "z": 2
+    },
+    "load_node1": {
+      "x": 5,
+      "y": 8,
+      "z": 0
+    },
+    "load_node2": {
+      "x": 5,
+      "y": 8,
+      "z": 2
     }
   },
   "anchors": {
@@ -45,16 +56,25 @@
       "tx": true,
       "ty": true,
       "tz": true
+    },
+    "anchor4": {
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
     }
   },
   "forces": {
-    "5kg_6m_high": {
+    "load_center": {
       "nodes": [
-        "node1"
+        "load_node1",
+        "load_node2"
       ],
       "x": 0,
-      "y": 0,
-      "z": -490
+      "y": -49,
+      "z": 0
     }
   }
 }
