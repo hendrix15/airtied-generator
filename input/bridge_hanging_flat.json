@@ -1,35 +1,35 @@
 {
-  "name": "Example Tower 1",
+  "name": "Bridge Hanging Flat",
   "nodes": {
     "anchor1": {
       "x": 0,
-      "y": 0,
+      "y": 5,
       "z": 0
     },
     "anchor2": {
-      "x": 2,
-      "y": 0,
-      "z": 0
+      "x": 0,
+      "y": 5,
+      "z": 2
     },
     "anchor3": {
-      "x": 1,
-      "y": 1.73,
+      "x": 10,
+      "y": 5,
       "z": 0
     },
+    "anchor4": {
+      "x": 10,
+      "y": 5,
+      "z": 2
+    },
     "load_node1": {
-      "x": 0,
-      "y": 0,
-      "z": 6
+      "x": 5,
+      "y": 5,
+      "z": 0
     },
     "load_node2": {
-      "x": 2,
-      "y": 0,
-      "z": 6
-    },
-    "load_node3": {
-      "x": 1,
-      "y": 1.73,
-      "z": 6
+      "x": 5,
+      "y": 5,
+      "z": 2
     }
   },
   "anchors": {
@@ -56,14 +56,25 @@
       "tx": true,
       "ty": true,
       "tz": true
+    },
+    "anchor4": {
+      "rx": false,
+      "ry": false,
+      "rz": false,
+      "tx": true,
+      "ty": true,
+      "tz": true
     }
   },
   "forces": {
-    "load_node": {
-      "nodes": ["load_node1", "load_node2", "load_node3"],
+    "load_center": {
+      "nodes": [
+        "load_node1",
+        "load_node2"
+      ],
       "x": 0,
-      "y": 0,
-      "z": -49
+      "y": -49,
+      "z": 0
     }
   }
 }
