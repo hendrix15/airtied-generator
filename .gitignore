@@ -160,9 +160,12 @@ cython_debug/
 #.idea/
 .vscode/
 
-data/
-
-training_data/out
-
 # Mac
 .DS_Store
+
+data/
+training_data/out
+
+images
+output
+!output/dino.json
