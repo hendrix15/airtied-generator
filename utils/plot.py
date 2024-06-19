@@ -8,7 +8,8 @@ from search.models import Edge, Node
 def visualize(
     nodes: list[Node],
     edges: list[Edge],
-    highlighted_edge_ids: list[str] = [],
+    compression_edges: list[str] = [],
+    tension_edges: list[str] = [],
     dirname: str | None = None,
     filename: str | None = None,
 ) -> None:
@@ -18,15 +19,23 @@ def visualize(
             (edge.v.vec.x, edge.v.vec.y, edge.v.vec.z),
         ]
         for edge in edges
-        if edge.id not in highlighted_edge_ids
+        if edge.id not in compression_edges and edge.id not in tension_edges
     ]
-    highlighted_lines = [
+    compression_lines = [
         [
             (edge.u.vec.x, edge.u.vec.y, edge.u.vec.z),
             (edge.v.vec.x, edge.v.vec.y, edge.v.vec.z),
         ]
         for edge in edges
-        if edge.id in highlighted_edge_ids
+        if edge.id in compression_edges
+    ]
+    tension_lines = [
+        [
+            (edge.u.vec.x, edge.u.vec.y, edge.u.vec.z),
+            (edge.v.vec.x, edge.v.vec.y, edge.v.vec.z),
+        ]
+        for edge in edges
+        if edge.id in tension_edges
     ]
 
     fig = plt.figure()
@@ -45,13 +54,19 @@ def visualize(
             [line[0][1], line[1][1]],
             color="black",
         )
-
-    for line in highlighted_lines:
+    for line in compression_lines:
         plt.plot(
             [line[0][0], line[1][0]],
             [line[0][2], line[1][2]],
             [line[0][1], line[1][1]],
             color="red",
+        )
+    for line in tension_lines:
+        plt.plot(
+            [line[0][0], line[1][0]],
+            [line[0][2], line[1][2]],
+            [line[0][1], line[1][1]],
+            color="blue",
         )
 
     min_x = min(xs)
