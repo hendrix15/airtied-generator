@@ -19,6 +19,9 @@ class State:
         self.iteration = iteration
         self.config = config
         self.grid_nodes = []
+        
+        # we have to keep the max total edge length to normalize the edge length of a node in the scoring funcction
+        self.max_total_edge_length = 0
 
     def __str__(self):
         return (
@@ -53,8 +56,9 @@ class State:
     def move(self, action: AbstractAction):
         return action.execute(self)
 
-    def truss_holds(self):
+    def calculate_fea_score(self):
         truss = generate_FEA_truss(self.nodes, self.edges)
+        accumulated_fea_score = 0
         try:
             truss.analyze(check_statics=True, check_stability=False)
             max_forces = {
@@ -68,18 +72,19 @@ class State:
                         ForceType.TENSION if max_force < 0 else ForceType.COMPRESSION
                     ),
                 )
+                accumulated_fea_score += 1 - (max_force / euler_load)
                 if abs(max_force) > euler_load:
                     print(
                         f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
                     )
-                    return False
+                    return -1
         except Exception as e:
             print(e)
-            return False
-        return True
+            return -1
+        return accumulated_fea_score / len(self.edges)
 
     def should_stop_search(self):
-        return self.iteration > self.config.max_iter_per_node or not self.truss_holds()
+        return self.iteration > self.config.max_iter_per_node or self.calculate_fea_score() < 0
 
     def _create_random_node(self):
         min_x, max_x = self.config.min_x, self.config.max_x
@@ -128,6 +133,8 @@ class State:
             )
 
         self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
+
+        self.max_total_edge_length = self.total_length()
 
     def is_point_in_hull(self, point, hull):
         new_hull = ConvexHull(np.vstack((hull.points, point)))

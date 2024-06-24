@@ -44,7 +44,7 @@ class TreeSearchNode:
         return child_node
 
     def is_terminal_node(self):
-        return not self.state.truss_holds()
+        return self.state.calculate_fea_score() < 0
 
     def rollout(self):
         current_rollout_state = self.state
@@ -52,10 +52,11 @@ class TreeSearchNode:
             possible_moves = current_rollout_state.get_legal_actions()
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
+        fea_score = current_rollout_state.calculate_fea_score()
         return (
             0
-            if not current_rollout_state.truss_holds()
-            else (1.0 / (self.state.total_length() + 1))
+            if fea_score < 0
+            else fea_score + (1 - (self.state.total_length() / self.state.max_total_edge_length))
         )
 
     def backpropagate(self, result):
