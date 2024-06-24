@@ -1,13 +1,13 @@
 general:
-  input_file: "input/bridge_hanging_round.json"
+  input_file: "input/tower.json"
   output_folder: "output/"
   image_folder: "images/"
   k: 10
 
 ucts:
   max_nodes: 7
-  max_iter: 200
-  max_iter_per_node: 5
+  max_iter: 100
+  max_iter_per_node: 10
   coordinate_range:
     - - 0.0
       - 2.0
@@ -15,7 +15,7 @@ ucts:
       - 2.0
     - - 0.0
       - 4.0
-  grid_density_unit: 1.5
+  grid_density_unit: 1.2
   num_neighbors: 6
   clamp_tolerance: 0.1
 truss_env:

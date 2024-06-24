@@ -55,7 +55,7 @@ class TreeSearchNode:
         return (
             0
             if not current_rollout_state.truss_holds()
-            else (1.0 / (self.state.total_length() + 1)) / (len(self.children) + 1)
+            else (1.0 / (self.state.total_length() + 1))
         )
 
     def backpropagate(self, result):
@@ -67,7 +67,7 @@ class TreeSearchNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    def best_child(self, c_param=1.3):
+    def best_child(self, c_param=0.4):
         choices_weights = [
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
@@ -106,13 +106,13 @@ class TrussSearchTree:
             v = self._tree_policy()
             reward = v.rollout()
             v.backpropagate(reward)
-            if simulation % 100 == 0:
-                visualize(
-                    nodes=v.state.nodes,
-                    edges=v.state.edges,
-                    dirname="output/run/",
-                    filename=f"{simulation}.png",
-                )
+            # if simulation % 100 == 0:
+            #     visualize(
+            #         nodes=v.state.nodes,
+            #         edges=v.state.edges,
+            #         dirname="output/run/",
+            #         filename=f"{simulation}.png",
+            #     )
         # to select best child go for exploitation only
         return self.root.best_child(c_param=0.0)
 

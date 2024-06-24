@@ -37,8 +37,8 @@ def execute(config_file: str) -> None:
     # shutil.rmtree(image_path)
 
     # Store and print only best child
-    write_json(nodes=nodes, edges=edges, dirname=output_path, filename="0.json")
-    visualize(nodes=nodes, edges=edges)
+    # write_json(nodes=nodes, edges=edges, dirname=output_path, filename="0.json")
+    # visualize(nodes=nodes, edges=edges)
 
     visualize_tree(root)
     # Store and print best k children

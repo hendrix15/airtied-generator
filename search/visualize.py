@@ -18,7 +18,7 @@ def visualize_tree(root):
     nx.draw(graph, pos, with_labels=False, arrows=True)
 
     # export the graph
-    plt.savefig("tree.png")
+    # plt.savefig("tree.png")
     # Display the graph
     plt.show()
 

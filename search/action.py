@@ -104,3 +104,17 @@ class AddEdgeWithNewNodeAction(AbstractAction):
         new_state.add_edge(self.edge)
         new_state.iteration += 1
         return new_state
+
+
+class TestAction(AbstractAction):
+    def __init__(
+        self,
+        score: int,
+    ):
+        self.score = score
+
+    def execute(self, state):
+        new_state = state.deep_copy()
+        new_state.score += self.score
+        new_state.iteration += 1
+        return new_state

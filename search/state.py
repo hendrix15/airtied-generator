@@ -9,7 +9,7 @@ from scipy.spatial import ConvexHull, distance_matrix
 from search.action import AbstractAction, AddEdgeAction, AddNodeAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from utils.fea import generate_FEA_truss, get_euler_load
+from utils.fea import ForceType, generate_FEA_truss, get_euler_load
 
 
 class State:
@@ -62,8 +62,13 @@ class State:
             }
             for edge in self.edges:
                 max_force = max_forces[edge.id]
-                euler_load = get_euler_load(edge.length())
-                if max_force > euler_load:
+                euler_load = get_euler_load(
+                    edge.length(),
+                    force_type=(
+                        ForceType.TENSION if max_force < 0 else ForceType.COMPRESSION
+                    ),
+                )
+                if abs(max_force) > euler_load:
                     print(
                         f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
                     )
