@@ -21,6 +21,7 @@ class TreeSearchNode:
         self._untried_actions = None
         self.config = config
         self.children = []
+        self.score = 0
 
     @property
     def untried_actions(self):
@@ -53,11 +54,13 @@ class TreeSearchNode:
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
         fea_score = current_rollout_state.calculate_fea_score()
-        return (
+        self.score = (
             0
             if fea_score < 0
-            else fea_score + (1 - (self.state.total_length() / self.state.max_total_edge_length))
+            else fea_score
+            + (1 - (self.state.total_length() / self.state.max_total_edge_length))
         )
+        return self.score
 
     def backpropagate(self, result):
         self._number_of_visits += 1.0
@@ -143,3 +146,13 @@ class TrussSearchTree:
             else:
                 stack.extend(node.children)
         return leafs
+
+    def get_k_best_children(self, k: int):
+        children = []
+        stack = [self.root]
+        while stack:
+            node = stack.pop()
+            children.append(node)
+            stack.extend(node.children)
+        children.sort(key=lambda x: x.score)
+        return children[-k:]

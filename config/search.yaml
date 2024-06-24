@@ -6,7 +6,7 @@ general:
 
 ucts:
   max_nodes: 7
-  max_iter: 100
+  max_iter: 500
   max_iter_per_node: 10
   coordinate_range:
     - - 0.0

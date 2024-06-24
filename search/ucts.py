@@ -28,22 +28,17 @@ def execute(config_file: str) -> None:
     root = TreeSearchNode(state=state, config=truss_env_config, parent=None)
     mcts = TrussSearchTree(root=root, config=truss_env_config)
     best_child = mcts.best_action(ucts_config.max_iter)
-    leafs = mcts.get_leafs()
-    leafs.sort(key=lambda x: x.state.total_length())
 
     folder_name = Path(general_config.input_file).stem
     output_path = f"{general_config.output_folder}{folder_name}/"
     # shutil.rmtree(output_path)
     # shutil.rmtree(image_path)
 
-    # Store and print only best child
-    # write_json(nodes=nodes, edges=edges, dirname=output_path, filename="0.json")
-    # visualize(nodes=nodes, edges=edges)
-
-    visualize_tree(root)
+    # visualize_tree(root)
     # Store and print best k children
-    # for i, child in enumerate(best_children):
-    #     nodes = [node for node in child.state.nodes]
-    #     edges = [edge for edge in child.state.edges]
-    #     write_json(nodes=nodes, edges=edges, dirname=output_path, filename=f"{i}.json")
-    #     visualize(nodes=nodes, edges=edges, dirname=image_path, filename=f"{i}.png")
+    best_children = mcts.get_k_best_children(5)
+    for i, child in enumerate(best_children):
+        nodes = [node for node in child.state.nodes]
+        edges = [edge for edge in child.state.edges]
+        write_json(nodes=nodes, edges=edges, dirname=output_path, filename=f"{i}.json")
+        visualize(nodes=nodes, edges=edges, dirname=output_path, filename=f"{i}.png")

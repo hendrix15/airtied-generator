@@ -19,7 +19,7 @@ class State:
         self.iteration = iteration
         self.config = config
         self.grid_nodes = []
-        
+
         # we have to keep the max total edge length to normalize the edge length of a node in the scoring funcction
         self.max_total_edge_length = 0
 
@@ -59,6 +59,8 @@ class State:
     def calculate_fea_score(self):
         truss = generate_FEA_truss(self.nodes, self.edges)
         accumulated_fea_score = 0
+        if len(self.edges) == 0:
+            return -1
         try:
             truss.analyze(check_statics=True, check_stability=False)
             max_forces = {
