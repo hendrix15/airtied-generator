@@ -21,7 +21,7 @@ class TreeSearchNode:
         self._untried_actions = None
         self.config = config
         self.children = []
-        self.score = 0
+        self.score = -100
 
     @property
     def untried_actions(self):
@@ -54,13 +54,23 @@ class TreeSearchNode:
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
         fea_score = current_rollout_state.calculate_fea_score()
-        self.score = (
-            0
+        if self.score == -100:
+            self.score = (
+                -1
+                if fea_score < 0
+                else fea_score
+                + (1 - (self.state.total_length() / self.state.max_total_edge_length))
+            )
+        return (
+            -1
             if fea_score < 0
             else fea_score
-            + (1 - (self.state.total_length() / self.state.max_total_edge_length))
+            + 1
+            - (
+                current_rollout_state.total_length()
+                / current_rollout_state.max_total_edge_length
+            )
         )
-        return self.score
 
     def backpropagate(self, result):
         self._number_of_visits += 1.0
