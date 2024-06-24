@@ -160,8 +160,10 @@ cython_debug/
 #.idea/
 .vscode/
 
-data/
+# Mac
+.DS_Store
 
+data/
 training_data/out
 
 # Mac
@@ -172,3 +174,6 @@ training_data/out
 output/
 images/
 zest.py
+images
+output
+!output/dino.json
