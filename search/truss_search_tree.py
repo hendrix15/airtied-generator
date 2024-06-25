@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+from tqdm import tqdm
 
 from search.config import TrussEnvironmentConfig
 from search.state import State
@@ -105,7 +106,7 @@ class TrussSearchTree:
 
         """
 
-        for simulation in range(0, simulations_number):
+        for simulation in tqdm(range(0, simulations_number)):
             # selection
             v = self._tree_policy()
             # rollout

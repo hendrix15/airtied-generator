@@ -62,7 +62,7 @@ class State:
         if len(self.edges) == 0:
             return -1
         try:
-            truss.analyze(check_statics=True, check_stability=False)
+            truss.analyze(log=False)
             max_forces = {
                 member.name: member.max_axial() for member in truss.Members.values()
             }
@@ -76,9 +76,9 @@ class State:
                 )
                 accumulated_fea_score += 1 - (max_force / euler_load)
                 if abs(max_force) > euler_load:
-                    print(
-                        f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
-                    )
+                    # print(
+                    #     f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
+                    # )
                     return -1
         except Exception as e:
             print(e)
