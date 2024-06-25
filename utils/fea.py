@@ -71,5 +71,8 @@ class ForceType:
 
 def get_euler_load(l: float, force_type: ForceType) -> float:
     g = 9.81  # gravitational acceleration
-    w = 35 if force_type == ForceType.COMPRESSION else 700  # load-bearing capacity for a beam with 1m length in kg
+    if(ForceType.TENSION == force_type):
+        return 700 * g
+    
+    w = 35 # load-bearing capacity for a beam with 1m length in kg
     return (w * g) / math.pow(l, 2)

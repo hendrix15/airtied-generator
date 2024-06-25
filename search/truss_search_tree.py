@@ -54,23 +54,12 @@ class TreeSearchNode:
             action = self.rollout_policy(possible_moves)
             current_rollout_state = current_rollout_state.move(action)
         fea_score = current_rollout_state.calculate_fea_score()
-        if self.score == -100:
-            self.score = (
-                -1
-                if fea_score < 0
-                else fea_score
-                + (1 - (self.state.total_length() / self.state.max_total_edge_length))
-            )
-        return (
+        self.score = (
             -1
             if fea_score < 0
-            else fea_score
-            + 1
-            - (
-                current_rollout_state.total_length()
-                / current_rollout_state.max_total_edge_length
-            )
+            else (1 - (self.state.total_length() / self.state.max_total_edge_length))
         )
+        return self.score
 
     def backpropagate(self, result):
         self._number_of_visits += 1.0
@@ -117,8 +106,11 @@ class TrussSearchTree:
         """
 
         for simulation in range(0, simulations_number):
+            # selection
             v = self._tree_policy()
+            # rollout
             reward = v.rollout()
+            # backpropagation
             v.backpropagate(reward)
             # if simulation % 100 == 0:
             #     visualize(
@@ -165,4 +157,10 @@ class TrussSearchTree:
             children.append(node)
             stack.extend(node.children)
         children.sort(key=lambda x: x.score)
+        print("Scores")
+        print([child.score for child in children])
+        # print("Best Scores")
+        # print([child.score for child in children[-k:]])
+        # print("FEA Scores")
+        # print([child.state.calculate_fea_score() for child in children])
         return children[-k:]

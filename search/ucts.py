@@ -40,5 +40,13 @@ def execute(config_file: str) -> None:
     for i, child in enumerate(best_children):
         nodes = [node for node in child.state.nodes]
         edges = [edge for edge in child.state.edges]
-        write_json(nodes=nodes, edges=edges, dirname=output_path, filename=f"{i}.json")
-        visualize(nodes=nodes, edges=edges, dirname=output_path, filename=f"{i}.png")
+        print("visualizing child", i, "with score", child.score, " and ", len(edges), "edges")
+        write_json(nodes=child.state.nodes, edges=child.state.edges, dirname=output_path, filename=f"{i}.json")
+        visualize(nodes=child.state.nodes, edges=child.state.edges, dirname=output_path, filename=f"{i}.png")
+
+    # leafs = mcts.get_leafs()
+    # print('leafs', leafs)
+    # for j, leaf in enumerate(leafs):
+    #     print("visualizing leaf", j, 'with score', leaf.score, " and ", len(leaf.state.edges), "edges")
+    #     write_json(nodes=leaf.state.nodes, edges=leaf.state.edges, dirname=output_path, filename=f"leaf_{j}.json")
+    #     visualize(nodes=leaf.state.nodes, edges=leaf.state.edges, dirname=output_path, filename=f"leaf_{j}.png")
