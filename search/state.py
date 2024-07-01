@@ -10,6 +10,7 @@ from search.action import AbstractAction, AddEdgeAction, AddNodeAction, RemoveEd
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
 from utils.fea import ForceType, generate_FEA_truss, get_euler_load
+from functools import cache
 
 
 class State:
@@ -57,12 +58,12 @@ class State:
         return action.execute(self)
 
     def calculate_fea_score(self):
-        truss = generate_FEA_truss(self.nodes, self.edges)
-        accumulated_fea_score = 0
         if len(self.edges) == 0:
             return -1
+        truss = generate_FEA_truss(self.nodes, self.edges)
+        accumulated_fea_score = 0
         try:
-            truss.analyze(log=False)
+            truss.analyze(log=False, check_stability=True, check_statics=True)
             max_forces = {
                 member.name: member.max_axial() for member in truss.Members.values()
             }
@@ -81,6 +82,7 @@ class State:
                     # )
                     return -1
         except Exception as e:
+            print('returning -1 due to exception:')
             print(e)
             return -1
         return accumulated_fea_score / len(self.edges)
