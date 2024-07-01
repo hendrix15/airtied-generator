@@ -35,7 +35,7 @@ def execute(config_file: str) -> None:
     # shutil.rmtree(output_path)
     # shutil.rmtree(image_path)
 
-    visualize_tree(root)
+    # visualize_tree(root)
     # return
     # Store and print best k children
     best_children = mcts.get_k_best_children(5)

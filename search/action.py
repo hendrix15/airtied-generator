@@ -72,19 +72,16 @@ class RemoveEdgeAction(AbstractAction):
         new_state.edges = [edge for edge in new_state.edges if edge.id != self.edge.id]
         # # remove node if it is not connected to any edge
         nodes = [self.edge.u, self.edge.v]
-        if not any(
-            [edge for edge in new_state.edges if edge.u.id == nodes[0].id or edge.v.id == nodes[0].id]
-        ):
-            new_state.nodes = [
-                node for node in new_state.nodes if node.id != nodes[0].id
-            ]
+        for edge_node in nodes:
+            if not any(
+                [edge for edge in new_state.edges if edge.u.id == edge_node.id or edge.v.id == edge_node.id]
+            ):
+                if edge_node.fixed or edge_node.load:
+                    continue
+                new_state.nodes = [
+                    node for node in new_state.nodes if node.id != edge_node.id
+                ]
 
-        if not any(
-            [edge for edge in new_state.edges if edge.v.id == nodes[1].id or edge.u.id == nodes[1].id]
-        ):
-            new_state.nodes = [
-                node for node in new_state.nodes if node.id != nodes[1].id
-            ]
 
         new_state.iteration += 1
         return new_state
