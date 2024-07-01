@@ -2,13 +2,13 @@ import math
 
 from PyNite import FEModel3D
 
-from search.config import Material, SectionProperties
+from search.config import SteelMaterial, SteelSectionProperties
 from search.models import Edge, Node
 
 
 def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
     truss = FEModel3D()
-    truss.add_material(Material.name, Material.e, Material.g, Material.nu, Material.rho)
+    truss.add_material(SteelMaterial.name, SteelMaterial.e, SteelMaterial.g, SteelMaterial.nu, SteelMaterial.rho)
 
     for node in nodes:
         truss.add_node(node.id, node.vec.x, node.vec.y, node.vec.z)
@@ -35,11 +35,11 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
             edge.id,
             edge.u.id,
             edge.v.id,
-            Material.name,
-            SectionProperties.iy,
-            SectionProperties.iz,
-            SectionProperties.j,
-            SectionProperties.a,
+            SteelMaterial.name,
+            SteelSectionProperties.iy,
+            SteelSectionProperties.iz,
+            SteelSectionProperties.j,
+            SteelSectionProperties.a,
         )
         truss.def_releases(
             edge.id,

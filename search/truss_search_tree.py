@@ -71,7 +71,7 @@ class TreeSearchNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    def best_child(self, c_param=0.4):
+    def best_child(self, c_param=0.01):
         choices_weights = [
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
