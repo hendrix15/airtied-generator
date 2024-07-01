@@ -71,7 +71,7 @@ class TreeSearchNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    def best_child(self, c_param=0.01):
+    def best_child(self, c_param=0):
         choices_weights = [
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
@@ -93,7 +93,7 @@ class TrussSearchTree:
         self.config = config
         self.root = root
 
-    def best_action(self, simulations_number):
+    def simulate(self, simulations_number):
         """
 
         Parameters
@@ -120,8 +120,6 @@ class TrussSearchTree:
             #         dirname="output/run/",
             #         filename=f"{simulation}.png",
             #     )
-        # to select best child go for exploitation only
-        return self.root.best_child(c_param=0.0)
 
     def _tree_policy(self):
         """

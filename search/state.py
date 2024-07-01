@@ -57,6 +57,7 @@ class State:
     def move(self, action: AbstractAction):
         return action.execute(self)
 
+    @cache
     def calculate_fea_score(self):
         if len(self.edges) == 0:
             return -1
