@@ -1,12 +1,13 @@
 import math
 
+import openseespy.opensees as ops
 from PyNite import FEModel3D
 
 from search.config import Material, SectionProperties
 from search.models import Edge, Node
 
 
-def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
+def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
     truss = FEModel3D()
     truss.add_material(Material.name, Material.e, Material.g, Material.nu, Material.rho)
 
@@ -60,7 +61,64 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
     # Add self weight of the beams
     truss.add_member_self_weight("FY", -1)
 
-    return truss
+    truss.analyze(check_statics=True, sparse=False)
+    max_forces = {member.name: member.max_axial() for member in truss.Members.values()}
+    return max_forces
+
+
+def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
+    node_mapping = {node.id: i for i, node in enumerate(nodes)}
+    edge_mapping = {edge.id: i for i, edge in enumerate(edges)}
+
+    ops.wipe()
+
+    ops.model("basic", "-ndm", 3, "-ndf", 6)
+
+    for node in nodes:
+        ops.node(node_mapping[node.id], node.vec.x, node.vec.y, node.vec.z)
+
+    ops.uniaxialMaterial("Elastic", 1, Material.e)
+
+    for edge in edges:
+        ops.element(
+            "Truss",
+            edge_mapping[edge.id],
+            node_mapping[edge.u.id],
+            node_mapping[edge.v.id],
+            SectionProperties.a,
+            1,
+        )
+
+    for node in nodes:
+        if node.r_support and node.t_support:
+            ops.fix(
+                node_mapping[node.id],
+                int(node.t_support.x),
+                int(node.t_support.y),
+                int(node.t_support.z),
+                int(node.r_support.x),
+                int(node.r_support.y),
+                int(node.r_support.z),
+            )
+
+    ops.timeSeries("Constant", 1)
+    ops.pattern("Plain", 1, 1)
+    for node in nodes:
+        if node.load:
+            ops.load(
+                node_mapping[node.id], node.load.x, node.load.y, node.load.z, 0, 0, 0
+            )
+
+    ops.system("BandSPD")
+    ops.numberer("RCM")
+    ops.constraints("Plain")
+    ops.integrator("LoadControl", 1.0)
+    ops.algorithm("Linear")
+    ops.analysis("Static")
+    ops.analyze(1)
+
+    max_forces = {edge.id: ops.basicForce(edge_mapping[edge.id])[0] for edge in edges}
+    return max_forces
 
 
 class ForceType:
@@ -73,3 +131,21 @@ def get_euler_load(l: float, force_type: ForceType) -> float:
         # gravitational acceleration and load-bearing capacity for a beam with 1m length in kg
         return 9.81 * 35 / math.pow(l, 2)
     return 9.81 * 700
+
+
+def get_compression_tension_edges(edges: list[Edge], max_forces: dict) -> list[dict]:
+    force_edges = []
+    for edge in edges:
+        max_force = max_forces[edge.id]
+        force_type = ForceType.COMPRESSION if max_force > 0 else ForceType.TENSION
+        euler_load = get_euler_load(l=edge.length(), force_type=force_type)
+        if abs(max_force) > euler_load:
+            force_edges.append(
+                {
+                    "id": edge.id,
+                    "force_type": force_type,
+                    "max_force": max_force,
+                    "euler_load": euler_load,
+                }
+            )
+    return force_edges

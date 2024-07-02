@@ -5,7 +5,7 @@ from math import ceil, floor
 from search.action import AbstractAction, AddEdgeAction, AddNodeWithEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from utils.fea import generate_FEA_truss
+from utils.fea import fea_pynite
 
 
 class State:
@@ -43,9 +43,8 @@ class State:
         return action.execute(self)
 
     def truss_holds(self):
-        truss = generate_FEA_truss(self.nodes, self.edges)
         try:
-            truss.analyze(check_statics=True)
+            max_forces = fea_pynite(self.nodes, self.edges)
             return True
         except Exception:
             return False

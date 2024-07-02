@@ -354,6 +354,52 @@ files = [
 ]
 
 [[package]]
+name = "openseespy"
+version = "3.6.0.3"
+description = "A OpenSeesPy package"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "openseespy-3.6.0.3-py3-none-any.whl", hash = "sha256:8e084850f11ab078deeb31f4b3479bcdae5d6e7e9e7febaf2d18d53d78710988"},
+]
+
+[package.dependencies]
+openseespylinux = {version = ">=3.6.0.3", markers = "platform_system == \"Linux\""}
+openseespymac = {version = ">=3.4.0.2", markers = "platform_system == \"Darwin\""}
+openseespywin = {version = ">=3.6.0.3", markers = "platform_system == \"Windows\""}
+
+[[package]]
+name = "openseespylinux"
+version = "3.6.0.3"
+description = "A OpenSeesPy Linux package"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "openseespylinux-3.6.0.3-py3-none-any.whl", hash = "sha256:b51cc274177d57f0c8ad2bcd544178f4440e6c8ed4ca1c8f38c9671ec5a06140"},
+]
+
+[[package]]
+name = "openseespymac"
+version = "3.4.0.2"
+description = "The Mac OS version of OpenSeesPy"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "openseespymac-3.4.0.2-py3-none-any.whl", hash = "sha256:c0cab4287a300f8eff09da72c760d05839cc2ae27fb70510ce82720266c02d3a"},
+    {file = "openseespymac-3.4.0.2.tar.gz", hash = "sha256:0b05214ccbd0936a18dcf4d570d2e9f918dbafc3df4709ad9f57b22f646cb236"},
+]
+
+[[package]]
+name = "openseespywin"
+version = "3.6.0.3"
+description = "A OpenSeesPy Windows package"
+optional = false
+python-versions = "~=3.11.0"
+files = [
+    {file = "openseespywin-3.6.0.3-py3-none-any.whl", hash = "sha256:1b40749d7e4dda51329915bc2ebad0ea707804e90c08a8d5f47cee103e003272"},
+]
+
+[[package]]
 name = "packaging"
 version = "24.0"
 description = "Core utilities for Python packages"
@@ -449,21 +495,6 @@ mic = ["olefile"]
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
 typing = ["typing-extensions"]
 xmp = ["defusedxml"]
-
-[[package]]
-name = "plotly"
-version = "5.22.0"
-description = "An open-source, interactive data visualization library for Python"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "plotly-5.22.0-py3-none-any.whl", hash = "sha256:68fc1901f098daeb233cc3dd44ec9dc31fb3ca4f4e53189344199c43496ed006"},
-    {file = "plotly-5.22.0.tar.gz", hash = "sha256:859fdadbd86b5770ae2466e542b761b247d1c6b49daed765b95bb8c7063e7469"},
-]
-
-[package.dependencies]
-packaging = "*"
-tenacity = ">=6.2.0"
 
 [[package]]
 name = "prettytable"
@@ -673,21 +704,6 @@ files = [
 ]
 
 [[package]]
-name = "tenacity"
-version = "8.3.0"
-description = "Retry code until it succeeds"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "tenacity-8.3.0-py3-none-any.whl", hash = "sha256:3649f6443dbc0d9b01b9d8020a9c4ec7a1ff5f6f3c6c8a036ef371f573fe9185"},
-    {file = "tenacity-8.3.0.tar.gz", hash = "sha256:953d4e6ad24357bceffbc9707bc74349aca9d245f68eb65419cf0c249a1949a2"},
-]
-
-[package.extras]
-doc = ["reno", "sphinx"]
-test = ["pytest", "tornado (>=4.5)", "typeguard"]
-
-[[package]]
 name = "wcwidth"
 version = "0.2.13"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -700,5 +716,5 @@ files = [
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.11"
-content-hash = "a938933739c5522a8aa6762a9c094bf40fcad28c99c5d62585acad42fff0086d"
+python-versions = "^3.11, <3.12"
+content-hash = "280d5c9e0ea1ee34b8eeb93ebadd7b6b7066aad5970f10cfccac7009beae1eae"
