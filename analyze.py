@@ -12,7 +12,7 @@ def main() -> None:
 
     nodes, edges = read_json(args.input)
     truss = generate_FEA_truss(nodes, edges)
-    truss.analyze(check_statics=True)
+    truss.analyze(check_statics=True, sparse=False)
     max_forces = {member.name: member.max_axial() for member in truss.Members.values()}
     print(max_forces)
 

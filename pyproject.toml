@@ -20,6 +20,7 @@ numpy = "1.26.4"
 pynitefea = "^0.0.94"
 scipy = "^1.13.1"
 tqdm = "^4.66.4"
+networkx = "^3.3"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.4"
