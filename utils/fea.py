@@ -3,8 +3,36 @@ import math
 import openseespy.opensees as ops
 from PyNite import FEModel3D
 
-from search.config import Material, SectionProperties
 from search.models import Edge, Node
+
+# 110g per m for d=0,2m beam = 1.08N
+# 275g per m for d=0,5m beam = 2.7N
+
+
+class Material:
+    """Material used for Finite Element Analysis"""
+
+    name = "Custom"
+    e = 1  # Modulus of elasticity
+    g = 1  # Shear modulus
+    nu = 1  # Poisson's ratio
+    rho = (
+        1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11 * 9.81
+    )  # (N per m^3) Density
+
+
+class SectionProperties:
+    """Section Properties used for Finite Element Analysis"""
+
+    iy = 1  # Weak axis moment of inertia
+    iz = 1  # Strong axis moment of inertia
+    j = 1  # Torsional constant
+    a = math.pi * math.pow((0.2 / 2), 2)  # (m^2) Cross-sectional area
+
+
+class ForceType:
+    TENSION = "TENSION"
+    COMPRESSION = "COMPRESSION"
 
 
 def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
@@ -119,11 +147,6 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
 
     max_forces = {edge.id: ops.basicForce(edge_mapping[edge.id])[0] for edge in edges}
     return max_forces
-
-
-class ForceType:
-    TENSION = "TENSION"
-    COMPRESSION = "COMPRESSION"
 
 
 def get_euler_load(l: float, force_type: ForceType) -> float:
