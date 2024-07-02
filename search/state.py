@@ -242,7 +242,7 @@ class State:
             # Find the indices of the nearest neighbors
             nearest_neighbors = np.argsort(dist_matrix[i])[:num_neighbors]
             for neighbor in nearest_neighbors:
-                if not self._edge_exists(self.nodes[i], self.nodes[neighbor]):
+                if not self._edge_exists(self.nodes[i], self.nodes[neighbor]) and i != neighbor:
                     self.add_edge(Edge(str(uuid.uuid4()), self.nodes[i], self.nodes[neighbor]))
 
     def _get_free_edges(self):
