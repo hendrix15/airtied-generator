@@ -70,6 +70,8 @@ class State:
             }
             for edge in self.edges:
                 max_force = max_forces[edge.id]
+                if np.isnan(max_force):
+                    return -1
                 euler_load = get_euler_load(
                     edge.length(),
                     force_type=(
