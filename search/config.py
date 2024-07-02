@@ -1,3 +1,4 @@
+import math
 import os
 
 
@@ -53,20 +54,26 @@ class TrussEnvironmentConfig:
         self.use_cross_constraint = True
 
 
-class SteelMaterial:
+# 110g per m for d=0,2m beam = 1.08N
+# 275g per m for d=0,5m beam = 2.7N
+
+
+class Material:
     """Material used for Finite Element Analysis"""
 
-    name = "Steel"
-    e = 199.95  # (GPa) Modulus of elasticity
-    g = 78.60  # GPa Shear modulus
-    nu = 0.30  # Poisson's ratio
-    rho = 7833.41  # kg per cubic metre Density
+    name = "Custom"
+    e = 1  # Modulus of elasticity
+    g = 1  # Shear modulus
+    nu = 1  # Poisson's ratio
+    rho = (
+        1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11 * 9.81
+    )  # (N per m^3) Density
 
 
-class SteelSectionProperties:
+class SectionProperties:
     """Section Properties used for Finite Element Analysis"""
 
-    iy = 0.0000072  # (m**4) Weak axis moment of inertia
-    iz = 0.000085  # (m**4) Strong axis moment of inertia
-    j = 1.249e-7  # (m**4) Torsional constant
-    a = 0.0049  # (m**2) Cross-sectional area
+    iy = 1  # Weak axis moment of inertia
+    iz = 1  # Strong axis moment of inertia
+    j = 1  # Torsional constant
+    a = math.pi * math.pow((0.2 / 2), 2)  # (m^2) Cross-sectional area

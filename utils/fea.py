@@ -2,13 +2,13 @@ import math
 
 from PyNite import FEModel3D
 
-from search.config import SteelMaterial, SteelSectionProperties
+from search.config import Material, SectionProperties
 from search.models import Edge, Node
 
 
 def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
     truss = FEModel3D()
-    truss.add_material(SteelMaterial.name, SteelMaterial.e, SteelMaterial.g, SteelMaterial.nu, SteelMaterial.rho)
+    truss.add_material(Material.name, Material.e, Material.g, Material.nu, Material.rho)
 
     for node in nodes:
         truss.add_node(node.id, node.vec.x, node.vec.y, node.vec.z)
@@ -35,11 +35,11 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
             edge.id,
             edge.u.id,
             edge.v.id,
-            SteelMaterial.name,
-            SteelSectionProperties.iy,
-            SteelSectionProperties.iz,
-            SteelSectionProperties.j,
-            SteelSectionProperties.a,
+            Material.name,
+            SectionProperties.iy,
+            SectionProperties.iz,
+            SectionProperties.j,
+            SectionProperties.a,
         )
         truss.def_releases(
             edge.id,
@@ -57,22 +57,19 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
             True,
         )
 
-    for member in truss.Members.values():
-        # 110g per m for d=0,2m beam = 1.08N
-        # 275g per m for d=0,5m beam = 2.7N
-        self_weight = 1.08
-        truss.add_member_dist_load(member.name, "FY", self_weight, self_weight)
+    # Add self weight of the beams
+    truss.add_member_self_weight("FY", -1)
 
     return truss
+
 
 class ForceType:
     TENSION = "TENSION"
     COMPRESSION = "COMPRESSION"
 
+
 def get_euler_load(l: float, force_type: ForceType) -> float:
-    g = 9.81  # gravitational acceleration
-    if(ForceType.TENSION == force_type):
-        return 700 * g
-    
-    w = 35 # load-bearing capacity for a beam with 1m length in kg
-    return (w * g) / math.pow(l, 2)
+    if force_type == ForceType.COMPRESSION:
+        # gravitational acceleration and load-bearing capacity for a beam with 1m length in kg
+        return 9.81 * 35 / math.pow(l, 2)
+    return 9.81 * 700
