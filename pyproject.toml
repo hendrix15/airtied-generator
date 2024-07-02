@@ -12,15 +12,15 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.11, <3.12"
 pyyaml = "^6.0.1"
-plotly = "^5.22.0"
 matplotlib = "^3.9.0"
 numpy = "1.26.4"
 pynitefea = "^0.0.94"
 scipy = "^1.13.1"
 tqdm = "^4.66.4"
 networkx = "^3.3"
+openseespy = "^3.6.0.3"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.4"

@@ -9,10 +9,11 @@ from scipy.spatial import ConvexHull, distance_matrix
 from search.action import AbstractAction, AddEdgeAction, AddNodeAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from utils.fea import ForceType, generate_FEA_truss, get_euler_load
+from utils.fea import get_compression_tension_edges
 from functools import cache
 
 from utils.plot import visualize
+from utils.fea import fea_pynite
 
 
 class State:
@@ -63,25 +64,13 @@ class State:
     def calculate_fea_score(self):
         if len(self.edges) == 0:
             return -1
-        truss = generate_FEA_truss(self.nodes, self.edges)
         accumulated_fea_score = 0
         try:
-            truss.analyze(log=False, check_stability=True, check_statics=True)
-            max_forces = {
-                member.name: member.max_axial() for member in truss.Members.values()
-            }
-            for edge in self.edges:
-                max_force = max_forces[edge.id]
-                if np.isnan(max_force):
-                    return -1
-                euler_load = get_euler_load(
-                    edge.length(),
-                    force_type=(
-                        ForceType.TENSION if max_force < 0 else ForceType.COMPRESSION
-                    ),
-                )
-                accumulated_fea_score += 1 - (max_force / euler_load)
-                if abs(max_force) > euler_load:
+            max_forces = fea_pynite(self.nodes, self.edges)
+            compression_tension_edges = get_compression_tension_edges(self.edges, max_forces)
+            for entry in compression_tension_edges:
+                accumulated_fea_score += 1 - (entry["max_force"] / entry["euler_load"])
+                if abs(entry["max_force"]) > entry["euler_load"]:
                     # print(
                     #     f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
                     # )
@@ -266,11 +255,11 @@ class State:
         return free_edges
 
     def divide_too_long_edge(self, edge : Edge, edges_to_remove :list, edges_to_add :list):
-      
+
         if edge.length() > self.config.max_edge_len:
             # visualize(nodes =self.nodes, edges= self.edges, compression_edges=[edge.id])
-            
-            if self._edge_exists(edge.u, edge.v): 
+
+            if self._edge_exists(edge.u, edge.v):
                 edges_to_remove.append(edge)
             middle = Vector3(
                 (edge.u.vec.x + edge.v.vec.x) / 2,
@@ -284,4 +273,3 @@ class State:
 
         else:
             edges_to_add.append(edge)
-        

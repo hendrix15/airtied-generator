@@ -1,4 +1,3 @@
-import math
 import os
 
 
@@ -53,28 +52,3 @@ class TrussEnvironmentConfig:
         self.use_longer_constraint = True
         self.use_shorter_constraint = True
         self.use_cross_constraint = True
-
-
-# 110g per m for d=0,2m beam = 1.08N
-# 275g per m for d=0,5m beam = 2.7N
-
-
-class Material:
-    """Material used for Finite Element Analysis"""
-
-    name = "Custom"
-    e = 1  # Modulus of elasticity
-    g = 1  # Shear modulus
-    nu = 1  # Poisson's ratio
-    rho = (
-        1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11 * 9.81
-    )  # (N per m^3) Density
-
-
-class SectionProperties:
-    """Section Properties used for Finite Element Analysis"""
-
-    iy = 1  # Weak axis moment of inertia
-    iz = 1  # Strong axis moment of inertia
-    j = 1  # Torsional constant
-    a = math.pi * math.pow((0.2 / 2), 2)  # (m^2) Cross-sectional area

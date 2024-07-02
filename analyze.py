@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from utils.fea import ForceType, generate_FEA_truss, get_euler_load
+from utils.fea import ForceType, fea_opensees, fea_pynite, get_compression_tension_edges
 from utils.parser import read_json
 from utils.plot import visualize
 
@@ -8,32 +8,36 @@ from utils.plot import visualize
 def main() -> None:
     parser = ArgumentParser()
     parser.add_argument("--input", type=str, default="dino.json")
+    parser.add_argument("--fea", type=str, default="pynite")
     args = parser.parse_args()
 
     nodes, edges = read_json(args.input)
-    truss = generate_FEA_truss(nodes, edges)
-    truss.analyze(check_statics=True, sparse=False)
-    max_forces = {member.name: member.max_axial() for member in truss.Members.values()}
+    if args.fea == "pynite":
+        max_forces = fea_pynite(nodes, edges)
+    if args.fea == "opensees":
+        max_forces = fea_opensees(nodes, edges)
     print(max_forces)
 
-    compression_edges = []
-    tension_edges = []
-    for edge in edges:
-        max_force = max_forces[edge.id]
-        force_type = ForceType.COMPRESSION if max_force > 0 else ForceType.TENSION
-        euler_load = get_euler_load(l=edge.length(), force_type=force_type)
-        if abs(max_force) > euler_load:
-            if force_type == ForceType.COMPRESSION:
-                compression_edges.append(edge.id)
-            if force_type == ForceType.TENSION:
-                tension_edges.append(edge.id)
-            print(
-                f"Member {edge.id}: Max force of {max_force}, {force_type} exceeds the euler load of {euler_load}"
-            )
+    compression_tension_edges = get_compression_tension_edges(edges, max_forces)
+    for entry in compression_tension_edges:
+        print(
+            f"Member {entry['id']}: Max force of {entry['max_force']}, {entry['force_type']} exceeds the euler load of {entry['euler_load']}"
+        )
 
     print(
-        f"The euler load is exceeded for {len(compression_edges) + len(tension_edges)} of {len(edges)} members"
+        f"The euler load is exceeded for {len(compression_tension_edges)} of {len(edges)} members"
     )
+
+    compression_edges = [
+        entry["id"]
+        for entry in compression_tension_edges
+        if entry["force_type"] == ForceType.COMPRESSION
+    ]
+    tension_edges = [
+        entry["id"]
+        for entry in compression_tension_edges
+        if entry["force_type"] == ForceType.TENSION
+    ]
 
     visualize(
         nodes=nodes,
