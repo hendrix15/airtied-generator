@@ -12,6 +12,8 @@ from search.models import Edge, Node, Vector3
 from utils.fea import ForceType, generate_FEA_truss, get_euler_load
 from functools import cache
 
+from utils.plot import visualize
+
 
 class State:
     def __init__(self, config: UCTSConfig, nodes, edges, iteration=0):
@@ -140,6 +142,15 @@ class State:
             )
 
         self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
+        edges_to_remove = []
+        edges_to_add = []
+        for edge in self.edges:
+            self.divide_too_long_edge(edge, edges_to_remove, edges_to_add)
+        for edge in edges_to_remove:
+            self.edges.remove(edge)
+        for edge in edges_to_add:
+            self.add_edge(edge)
+        self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
 
         self.max_total_edge_length = self.total_length()
 
@@ -253,3 +264,24 @@ class State:
                     edge = Edge(str(uuid.uuid4()), self.nodes[i], self.nodes[j])
                     free_edges.append(edge)
         return free_edges
+
+    def divide_too_long_edge(self, edge : Edge, edges_to_remove :list, edges_to_add :list):
+      
+        if edge.length() > self.config.max_edge_len:
+            # visualize(nodes =self.nodes, edges= self.edges, compression_edges=[edge.id])
+            
+            if self._edge_exists(edge.u, edge.v): 
+                edges_to_remove.append(edge)
+            middle = Vector3(
+                (edge.u.vec.x + edge.v.vec.x) / 2,
+                (edge.u.vec.y + edge.v.vec.y) / 2,
+                (edge.u.vec.z + edge.v.vec.z) / 2,
+            )
+            new_node = Node(str(uuid.uuid4()), middle)
+            self.add_node(new_node)
+            self.divide_too_long_edge(Edge(str(uuid.uuid4()), edge.u, new_node), edges_to_remove, edges_to_add)
+            self.divide_too_long_edge(Edge(str(uuid.uuid4()), new_node, edge.v), edges_to_remove, edges_to_add)
+
+        else:
+            edges_to_add.append(edge)
+        

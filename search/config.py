@@ -30,6 +30,7 @@ class UCTSConfig:
         self.grid_density_unit = args["grid_density_unit"]
         self.num_neighbors = args["num_neighbors"]
         self.clamp_tolerance = args["clamp_tolerance"]
+        self.max_edge_len = args["max_edge_len"]
 
 
 class TrussEnvironmentConfig:

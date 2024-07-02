@@ -21,10 +21,10 @@ def execute(config_file: str) -> None:
     state = State(config=ucts_config, nodes=nodes, edges=edges)
     state.init_fully_connected()
 
-    # visualize(
-    #     nodes=state.nodes,
-    #     edges=state.edges,
-    # )
+    visualize(
+        nodes=state.nodes,
+        edges=state.edges,
+    )
     
     root = TreeSearchNode(state=state, config=truss_env_config, parent=None)
     mcts = TrussSearchTree(root=root, config=truss_env_config)
