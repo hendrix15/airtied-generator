@@ -46,4 +46,49 @@ python analyze.py --input output/dino.json
 
 ## Representation
 
-We are using JSON files to represent inputs (anchors and forces) and trusses (name?, vertices and edges).
+```json
+{
+    "nodes": {
+        "node1": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "node2": {
+            "x": 0,
+            "y": 3,
+            "z": 1
+        },
+        ...
+    },
+    "edges": {
+        "edge1": {
+            "start": "node1",
+            "end": "node2"
+        },
+        ...
+    },
+    "anchors": {
+        "node1": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        ...
+    },
+    "forces": {
+        "force1": {
+            "nodes": [
+                "node1"
+            ],
+            "x": 0,
+            "y": -49,
+            "z": 0
+        }
+        ...
+    }
+}
+```
