@@ -3,15 +3,12 @@ from __future__ import annotations
 import numpy as np
 from tqdm import tqdm
 
-from search.config import TrussEnvironmentConfig
 from search.state import State
-from utils.plot import visualize
 
 
 class TreeSearchNode:
     def __init__(
         self,
-        config: TrussEnvironmentConfig,
         state: State,
         parent: TreeSearchNode | None = None,
     ):
@@ -20,7 +17,6 @@ class TreeSearchNode:
         self._number_of_visits = 0.0
         self._result = 0.0
         self._untried_actions = None
-        self.config = config
         self.children = []
         self.score = -100
 
@@ -89,8 +85,7 @@ class TreeSearchNode:
 
 
 class TrussSearchTree:
-    def __init__(self, config: TrussEnvironmentConfig, root: TreeSearchNode) -> None:
-        self.config = config
+    def __init__(self, root: TreeSearchNode) -> None:
         self.root = root
 
     def simulate(self, simulations_number):

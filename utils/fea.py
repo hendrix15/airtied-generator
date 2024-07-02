@@ -1,6 +1,6 @@
 import math
-import numpy as np
 
+import numpy as np
 import openseespy.opensees as ops
 from PyNite import FEModel3D
 
@@ -92,7 +92,7 @@ def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
 
     truss.analyze(check_statics=True, sparse=False)
     max_forces = {member.name: member.max_axial() for member in truss.Members.values()}
-    if any(np.isnan(max_force) for max_force in max_forces):
+    if any(np.isnan(max_force) for max_force in max_forces.values()):
         raise Exception("At least one of the axial forces is nan")
     return max_forces
 
