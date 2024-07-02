@@ -57,19 +57,19 @@ def generate_FEA_truss(nodes: list[Node], edges: list[Edge]) -> FEModel3D:
             True,
         )
 
-    for member in truss.Members.values():
-        # 110g per m for d=0,2m beam = 1.08N
-        # 275g per m for d=0,5m beam = 2.7N
-        self_weight = 1.08
-        truss.add_member_dist_load(member.name, "FY", self_weight, self_weight)
+    # Add self weight of the beams
+    truss.add_member_self_weight("FY", -1)
 
     return truss
+
 
 class ForceType:
     TENSION = "TENSION"
     COMPRESSION = "COMPRESSION"
 
+
 def get_euler_load(l: float, force_type: ForceType) -> float:
-    g = 9.81  # gravitational acceleration
-    w = 35 if force_type == ForceType.COMPRESSION else 700  # load-bearing capacity for a beam with 1m length in kg
-    return (w * g) / math.pow(l, 2)
+    if force_type == ForceType.COMPRESSION:
+        # gravitational acceleration and load-bearing capacity for a beam with 1m length in kg
+        return 9.81 * 35 / math.pow(l, 2)
+    return 9.81 * 700
