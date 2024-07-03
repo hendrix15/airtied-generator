@@ -170,10 +170,11 @@ training_data/out
 .DS_Store
 
 
-# output
-output/
-images/
-zest.py
+# Output
+output/*
 images
-output
+
 !output/dino.json
+!output/triangle.json
+!output/simple_pyramid.json
+!output/complex_pyramid.json

@@ -1,0 +1,57 @@
+{
+    "nodes": {
+        "anchor1": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "anchor2": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+        },
+        "node1": {
+            "x": 1,
+            "y": 6,
+            "z": 1
+        }
+    },
+    "edges": {
+        "15db32c7-82ad-4cdd-b6f9-9ff9c3464f96": {
+            "start": "anchor1",
+            "end": "node1"
+        },
+        "15db32c7-82ad-4cdd-b6f9-9ff9c3464f91": {
+            "start": "anchor2",
+            "end": "node1"
+        }
+    },
+    "anchors": {
+        "anchor1": {
+            "rx": true,
+            "ry": true,
+            "rz": true,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "anchor2": {
+            "rx": true,
+            "ry": true,
+            "rz": true,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        }
+    },
+    "forces": {
+        "5kg_6m_high": {
+            "nodes": [
+                "node1"
+            ],
+            "x": 0,
+            "y": -49,
+            "z": 0
+        }
+    }
+}
