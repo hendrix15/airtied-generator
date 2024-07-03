@@ -17,7 +17,7 @@ class Material:
     e = 199.95  # (GPa) Modulus of elasticity
     g = 78.60  # (GPa) Shear modulus
     nu = 0.30  # Poisson's ratio
-    rho = 1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11  # (N per m^3) Density
+    rho = 1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11  # (kg per m^3) Density
 
 
 class SectionProperties:
@@ -95,105 +95,69 @@ def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
     return max_forces
 
 
-def fea_opensees(nodes: list[Node], edges: list[Edge], truss: bool = False) -> dict:
+def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
     node_mapping = {node.id: i for i, node in enumerate(nodes)}
     edge_mapping = {edge.id: i for i, edge in enumerate(edges)}
 
     ops.wipe()
-
-    if truss:
-        ops.model("basic", "-ndm", 3, "-ndf", 3)
-    else:
-        ops.model("basic", "-ndm", 3, "-ndf", 6)
+    ops.model("basic", "-ndm", 3, "-ndf", 6)
 
     ops.timeSeries("Constant", 1)
     ops.pattern("Plain", 1, 1)
 
     for node in nodes:
         ops.node(node_mapping[node.id], node.vec.x, node.vec.y, node.vec.z)
+        if node.r_support and node.t_support:
+            ops.fix(
+                node_mapping[node.id],
+                int(node.t_support.x),
+                int(node.t_support.y),
+                int(node.t_support.z),
+                int(node.r_support.x),
+                int(node.r_support.y),
+                int(node.r_support.z),
+            )
+        if node.load:
+            ops.load(
+                node_mapping[node.id],
+                node.load.x,
+                node.load.y,
+                node.load.z,
+                0,
+                0,
+                0,
+            )
 
-    if truss:
-        # Reinforced steel
-        ops.uniaxialMaterial("Steel01", 1, 60.0, 30000.0, 0.01)
-    else:
-        # Transformation of local coordinate system
-        ops.geomTransf("Linear", 1, 0, 0, 1)
-        ops.geomTransf("Linear", 2, 1, 0, 0)
-        # Calculate self weight of the beams
-        b = [0, -Material.rho * SectionProperties.a, 0]
-        wx = np.dot(ops.eleResponse(1, "xaxis"), b)  # x'*b
-        wy = np.dot(ops.eleResponse(1, "yaxis"), b)  # y'*b
-        wz = np.dot(ops.eleResponse(1, "zaxis"), b)  # z'*b
+    # Transformation of local coordinate system
+    ops.geomTransf("Linear", 1, 0, 0, 1)
+    ops.geomTransf("Linear", 2, 1, 0, 0)
 
     for edge in edges:
-        if truss:
-            ops.element(
-                "Truss",
-                edge_mapping[edge.id],
-                node_mapping[edge.u.id],
-                node_mapping[edge.v.id],
-                SectionProperties.a,
-                1,
-            )
-        else:
-            # Select transformation
-            transform = (
-                2
-                if edge.u.vec.x == edge.v.vec.x and edge.u.vec.y == edge.v.vec.y
-                else 1
-            )
-            ops.element(
-                "elasticBeamColumn",
-                edge_mapping[edge.id],
-                node_mapping[edge.u.id],
-                node_mapping[edge.v.id],
-                SectionProperties.a,
-                Material.e,
-                Material.g,
-                SectionProperties.j,
-                SectionProperties.iz,
-                SectionProperties.iy,
-                transform,
-            )
-            # Add self weight
-            ops.eleLoad(
-                "-ele", edge_mapping[edge.id], "-type", "-beamUniform", wy, wz, wx
-            )
+        # Select transformation
+        transform = (
+            2 if edge.u.vec.x == edge.v.vec.x and edge.u.vec.y == edge.v.vec.y else 1
+        )
+        ops.element(
+            "elasticBeamColumn",
+            edge_mapping[edge.id],
+            node_mapping[edge.u.id],
+            node_mapping[edge.v.id],
+            SectionProperties.a,
+            Material.e,
+            Material.g,
+            SectionProperties.j,
+            SectionProperties.iz,
+            SectionProperties.iy,
+            transform,
+        )
 
-    for node in nodes:
-        if node.r_support and node.t_support:
-            if truss:
-                ops.fix(
-                    node_mapping[node.id],
-                    int(node.t_support.x),
-                    int(node.t_support.y),
-                    int(node.t_support.z),
-                )
-            else:
-                ops.fix(
-                    node_mapping[node.id],
-                    int(node.t_support.x),
-                    int(node.t_support.y),
-                    int(node.t_support.z),
-                    int(node.r_support.x),
-                    int(node.r_support.y),
-                    int(node.r_support.z),
-                )
-
-    for node in nodes:
-        if node.load:
-            if truss:
-                ops.load(node_mapping[node.id], node.load.x, node.load.y, node.load.z)
-            else:
-                ops.load(
-                    node_mapping[node.id],
-                    node.load.x,
-                    node.load.y,
-                    node.load.z,
-                    0,
-                    0,
-                    0,
-                )
+    # Add self weight of the beams
+    for edge in edges:
+        b = [0, -Material.rho * SectionProperties.a, 0]
+        wx = np.dot(ops.eleResponse(edge_mapping[edge.id], "xaxis"), b)  # x'*b
+        wy = np.dot(ops.eleResponse(edge_mapping[edge.id], "yaxis"), b)  # y'*b
+        wz = np.dot(ops.eleResponse(edge_mapping[edge.id], "zaxis"), b)  # z'*b
+        ops.eleLoad("-ele", edge_mapping[edge.id], "-type", "-beamUniform", wy, wz, wx)
 
     ops.system("BandSPD")
     ops.numberer("RCM")
@@ -216,8 +180,8 @@ def fea_opensees(nodes: list[Node], edges: list[Edge], truss: bool = False) -> d
 def get_euler_load(l: float, force_type: ForceType) -> float:
     if force_type == ForceType.COMPRESSION:
         # gravitational acceleration and load-bearing capacity for a beam with 1m length in kg
-        return 9.81 * 35 / math.pow(l, 2)
-    return 9.81 * 700
+        return 35 / math.pow(l, 2)
+    return 700
 
 
 def get_compression_tension_edges(edges: list[Edge], max_forces: dict) -> list[dict]:

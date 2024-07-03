@@ -11,7 +11,7 @@ def main() -> None:
     ]:
         nodes, edges = read_json(f"output/{file_name}")
         pynite_max_forces = fea_pynite(nodes, edges)
-        opensees_max_forces = fea_opensees(nodes, edges, False)
+        opensees_max_forces = fea_opensees(nodes, edges)
         print("PyNite \n")
         for edge, force in pynite_max_forces.items():
             print(f"{edge} - {force}")
