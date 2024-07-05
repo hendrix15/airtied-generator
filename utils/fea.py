@@ -13,20 +13,20 @@ from search.models import Edge, Node
 class Material:
     """Material used for Finite Element Analysis"""
 
-    name = "Steel"
-    e = 199.95  # (GPa) Modulus of elasticity
-    g = 78.60  # (GPa) Shear modulus
+    name = "Airtied"
+    e = 199.95  # Modulus of elasticity (GPa)
+    g = 78.60  # Shear modulus (GPa)
     nu = 0.30  # Poisson's ratio
-    rho = 1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11  # (kg per m^3) Density
+    rho = 1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11  # Density (kg per m^3)
 
 
 class SectionProperties:
     """Section Properties used for Finite Element Analysis"""
 
-    iy = 0.0000072  # (m**4) Weak axis moment of inertia
-    iz = 0.000085  # (m**4) Strong axis moment of inertia
-    j = 1.249e-7  # (m**4) Torsional constant
-    a = math.pi * math.pow((0.2 / 2), 2)  # (m^2) Cross-sectional area
+    iy = 0.0000072  # Weak axis moment of inertia (m^4)
+    iz = 0.000085  # Strong axis moment of inertia (m^4)
+    j = 1.249e-7  # Torsional constant (m^4)
+    a = math.pi * math.pow((0.2 / 2), 2)  # Cross-sectional area (m^2)
 
 
 class ForceType:
@@ -36,7 +36,7 @@ class ForceType:
 
 def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
     truss = FEModel3D()
-    truss.add_material(Material.name, Material.e, Material.g, Material.nu, Material.rho)
+    truss.add_material(Material.name, 1, 1, 1, 1)
 
     for node in nodes:
         truss.add_node(node.id, node.vec.x, node.vec.y, node.vec.z)
@@ -64,10 +64,10 @@ def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
             edge.u.id,
             edge.v.id,
             Material.name,
-            SectionProperties.iy,
-            SectionProperties.iz,
-            SectionProperties.j,
-            SectionProperties.a,
+            1,
+            1,
+            1,
+            1,
         )
         truss.def_releases(
             edge.id,
@@ -86,7 +86,7 @@ def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
         )
 
     # Add self weight of the beams
-    truss.add_member_self_weight("FY", -1)
+    # truss.add_member_self_weight("FY", -1)
 
     truss.analyze(check_statics=True, sparse=False)
     max_forces = {member.name: member.max_axial() for member in truss.Members.values()}

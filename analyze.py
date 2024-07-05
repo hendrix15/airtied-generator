@@ -7,14 +7,16 @@ from utils.plot import visualize
 
 def main() -> None:
     parser = ArgumentParser()
-    parser.add_argument("--input", type=str, default="dino.json")
-    parser.add_argument("--fea", type=str, default="pynite")
+    parser.add_argument("--input", type=str)
+    parser.add_argument(
+        "--fea", type=str, choices=["simple", "complex"], default="simple"
+    )
     args = parser.parse_args()
 
     nodes, edges = read_json(args.input)
-    if args.fea == "pynite":
+    if args.fea == "simple":
         max_forces = fea_pynite(nodes, edges)
-    if args.fea == "opensees":
+    if args.fea == "complex":
         max_forces = fea_opensees(nodes, edges)
     print(max_forces)
 
