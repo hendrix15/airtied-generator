@@ -1,17 +1,16 @@
-import copy
-import random
 import uuid
-from functools import cache
-from math import ceil, floor
+from argparse import ArgumentParser
 
 import numpy as np
 from scipy.spatial import ConvexHull, distance_matrix
 
-from fea.pynite import fea_pynite
+from fea.openseespy import fea_opensees
 from fea.utils import get_all_compression_tension_edges
-from search.action import AbstractAction, RemoveEdgeAction
-from search.config import UCTSConfig
+from search.config import GeneralConfig, UCTSConfig
 from search.models import Edge, Node, Vector3
+from search.utils import load_config
+from utils.parser import read_json
+from utils.plot import visualize
 
 
 class State:
@@ -25,97 +24,12 @@ class State:
         # we have to keep the max total edge length to normalize the edge length of a node in the scoring funcction
         self.max_total_edge_length = 0
 
-    def __str__(self):
-        return (
-            "nodes: "
-            + str(self.nodes)
-            + " edges: "
-            + str(self.edges)
-            + " eid: "
-            + str(self.eid)
-        )
-
-    def deep_copy(
-        self,
-    ):
-        return copy.deepcopy(self)
-
     def add_node(self, node):
         self.nodes.append(node)
 
     def add_edge(self, edge):
         if not self._edge_exists(edge.u, edge.v):
             self.edges.append(edge)
-
-    # def get_legal_actions(self):
-    #     node_actions = [AddNodeAction(node) for node in self.grid_nodes]
-    #     edge_actions = [AddEdgeAction(edge) for edge in self._get_free_edges()]
-
-    #     return node_actions + edge_actions
-    def get_legal_actions(self):
-        return [RemoveEdgeAction(edge) for edge in self.edges]
-
-    def move(self, action: AbstractAction):
-        return action.execute(self)
-
-    @cache
-    def calculate_fea_score(self):
-        if len(self.edges) == 0:
-            return -1
-        force_ratios = []
-
-        try:
-            max_forces = fea_pynite(self.nodes, self.edges)
-            compression_tension_edges = get_all_compression_tension_edges(
-                self.edges, max_forces
-            )
-            for entry in compression_tension_edges:
-                force_ratios.append(abs(entry["max_force"]) / abs(entry["euler_load"]))
-
-                if abs(entry["max_force"]) > entry["euler_load"]:
-                    # print(
-                    #     f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
-                    # )
-                    return -1
-
-            max_ratio = max(force_ratios)
-            min_ratio = min(force_ratios)
-        except Exception as e:
-            print("returning -1 due to exception:")
-            print(e)
-            return -1
-
-        return max_ratio - min_ratio
-
-    def should_stop_search(self):
-        return (
-            self.iteration > self.config.max_iter_per_node
-            or self.calculate_fea_score() < 0
-        )
-
-    def _create_random_node(self):
-        min_x, max_x = self.config.min_x, self.config.max_x
-        min_y, max_y = self.config.min_y, self.config.max_y
-        min_z, max_z = self.config.min_z, self.config.max_z
-        id = str(uuid.uuid4())
-
-        x = random.randint(floor(min_x / 0.25), ceil(max_x / 0.25)) * 0.25
-        y = random.randint(floor(min_y / 0.25), ceil(max_y / 0.25)) * 0.25
-        z = random.randint(floor(min_z / 0.25), ceil(max_z / 0.25)) * 0.25
-
-        return Node(id, Vector3(x, y, z))
-
-    def _create_new_edge_for_existing_nodes(self):
-        if len(self.edges) == len(self.nodes) * (len(self.nodes) - 1) / 2:
-            return None
-
-        while True:
-            u, v = random.sample(self.nodes, 2)
-            if not self._edge_exists(u, v):
-                return Edge(str(uuid.uuid4()), u, v)
-
-    def _create_new_edge(self, u, v):
-        return Edge(str(uuid.uuid4()), u, v)
 
     def _edge_exists(self, u, v):
         for edge in self.edges:
@@ -125,23 +39,8 @@ class State:
                 return True
         return False
 
-    def total_length(self):
-        return sum(edge.length() for edge in self.edges)
-
     def init_fully_connected(self):
         """init the state with free joint nodes that are within in the config constraints"""
-        self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
-
-        edges_to_remove = []
-        edges_to_add = []
-        for edge in self.edges:
-            self.divide_too_long_edge(edge, edges_to_remove, edges_to_add)
-        for edge in edges_to_remove:
-            self.edges.remove(edge)
-        for edge in edges_to_add:
-            self.add_edge(edge)
-
-        self.connect_nodes_nearest_neighbors(num_neighbors=2)
         free_joints_points = self.get_nodes_in_convex_hull(
             grid_spacing=self.config.grid_density_unit,
             clamp_tolerance=self.config.clamp_tolerance,
@@ -151,9 +50,21 @@ class State:
                 Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
             )
 
-        self.connect_nodes_nearest_neighbors(num_neighbors=5)
+        self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
+        edges_to_remove = []
+        edges_to_add = []
+        for edge in self.edges:
+            self.divide_too_long_edge(edge, edges_to_remove, edges_to_add)
+        for edge in edges_to_remove:
+            self.edges.remove(edge)
+        for edge in edges_to_add:
+            self.add_edge(edge)
+        self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
 
         self.max_total_edge_length = self.total_length()
+
+    def total_length(self):
+        return sum(edge.length() for edge in self.edges)
 
     def is_point_in_hull(self, point, hull):
         new_hull = ConvexHull(np.vstack((hull.points, point)))
@@ -295,3 +206,95 @@ class State:
 
         else:
             edges_to_add.append(edge)
+
+    def remove_edge_least_impact(self) -> bool:
+        if len(self.edges) == 0:
+            return False
+
+        results = {}
+        tmp_edges = {}
+        tmp_nodes = {}
+        for current_edge in self.edges:
+            new_nodes = self.nodes.copy()
+            new_edges = [
+                edge for edge in self.edges.copy() if edge.id != current_edge.id
+            ]
+            nodes = [current_edge.u, current_edge.v]
+            for edge_node in nodes:
+                if not any(
+                    [
+                        edge
+                        for edge in new_edges
+                        if edge.u.id == edge_node.id or edge.v.id == edge_node.id
+                    ]
+                ):
+                    if edge_node.fixed or edge_node.load:
+                        continue
+                    new_nodes = [
+                        node for node in self.nodes.copy() if node.id != edge_node.id
+                    ]
+
+            force_ratios = []
+
+            try:
+                max_forces = fea_opensees(self.nodes, self.edges)
+                compression_tension_edges = get_all_compression_tension_edges(
+                    self.edges, max_forces
+                )
+                for entry in compression_tension_edges:
+                    force_ratios.append(
+                        abs(entry["max_force"]) / abs(entry["euler_load"])
+                    )
+
+                    if abs(entry["max_force"]) > entry["euler_load"]:
+                        results[current_edge.id] = -1
+
+                results[current_edge.id] = max(force_ratios)
+                tmp_edges[current_edge.id] = new_edges
+                tmp_nodes[current_edge.id] = new_nodes
+
+            except Exception:
+                results[current_edge.id] = -1
+
+        if all(value == -1 for value in results.values()):
+            return False
+        else:
+            min_val = min(value for value in results.values() if value != -1)
+            edge_id = [k for k, v in results.items() if v == min_val][0]
+            self.nodes = tmp_nodes[edge_id]
+            self.edges = tmp_edges[edge_id]
+            return True
+
+
+def execute(config_file: str) -> None:
+    config = load_config(config_file)
+    general_config = GeneralConfig(config)
+    ucts_config = UCTSConfig(config)
+
+    nodes, edges = read_json(general_config.input_file)
+
+    state = State(config=ucts_config, nodes=nodes, edges=edges)
+    state.init_fully_connected()
+
+    iteration = 1
+    while state.remove_edge_least_impact():
+        print(f"Interation: {iteration}")
+        iteration += 1
+        print(f"Nodes: {len(state.nodes)}")
+        print(f"Edges: {len(state.edges)}")
+
+    print("/n")
+
+    visualize(nodes=state.nodes, edges=state.edges)
+
+
+def main() -> None:
+    parser = ArgumentParser()
+    parser.add_argument("--config_file", type=str)
+    args = parser.parse_args()
+
+    execute(config_file=args.config_file)
+
+
+if __name__ == "__main__":
+    main()
