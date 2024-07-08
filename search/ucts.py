@@ -4,6 +4,7 @@ from search.config import GeneralConfig, UCTSConfig
 from search.state import State
 from search.truss_search_tree import TreeSearchNode, TrussSearchTree
 from search.utils import load_config
+from search.visualize import visualize_tree
 from utils.parser import read_json, write_json
 from utils.plot import visualize
 

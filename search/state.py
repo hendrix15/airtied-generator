@@ -9,7 +9,7 @@ from scipy.spatial import ConvexHull, distance_matrix
 from search.action import AbstractAction, AddEdgeAction, AddNodeAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from utils.fea import get_compression_tension_edges
+from utils.fea import get_all_compression_tension_edges
 from functools import cache
 
 from utils.plot import visualize
@@ -64,22 +64,29 @@ class State:
     def calculate_fea_score(self):
         if len(self.edges) == 0:
             return -1
-        accumulated_fea_score = 0
+        force_ratios = []
+    
         try:
             max_forces = fea_pynite(self.nodes, self.edges)
-            compression_tension_edges = get_compression_tension_edges(self.edges, max_forces)
+            compression_tension_edges = get_all_compression_tension_edges(self.edges, max_forces)
             for entry in compression_tension_edges:
-                accumulated_fea_score += 1 - (entry["max_force"] / entry["euler_load"])
+                force_ratios.append(abs(entry["max_force"]) / abs(entry["euler_load"]))
+
                 if abs(entry["max_force"]) > entry["euler_load"]:
                     # print(
                     #     f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
                     # )
                     return -1
+            
+            max_ratio = max(force_ratios)
+            min_ratio = min(force_ratios)
         except Exception as e:
             print('returning -1 due to exception:')
             print(e)
             return -1
-        return accumulated_fea_score / len(self.edges)
+        
+
+        return (max_ratio - min_ratio)
 
     def should_stop_search(self):
         return self.iteration > self.config.max_iter_per_node or self.calculate_fea_score() < 0

@@ -37,7 +37,7 @@ class TreeSearchNode:
     def expand(self):
         action = self.untried_actions.pop()
         next_state = self.state.move(action)
-        child_node = TreeSearchNode(state=next_state, config=self.config, parent=self)
+        child_node = TreeSearchNode(state=next_state, parent=self)
         self.children.append(child_node)
         return child_node
 
@@ -54,7 +54,8 @@ class TreeSearchNode:
         self.score = (
             -1
             if fea_score < 0
-            else (1 - (self.state.total_length() / self.state.max_total_edge_length))
+            else (1 - fea_score)
+            + (1 - (self.state.total_length() / self.state.max_total_edge_length))
         )
         return self.score
 

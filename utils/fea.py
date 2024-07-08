@@ -184,19 +184,31 @@ def get_euler_load(l: float, force_type: ForceType) -> float:
     return 700
 
 
-def get_compression_tension_edges(edges: list[Edge], max_forces: dict) -> list[dict]:
+def get_breaking_compression_tension_edges(
+    edges: list[Edge], max_forces: dict
+) -> list[dict]:
+    edges = get_all_compression_tension_edges(edges, max_forces)
+    force_edges = []
+    for edge in edges:
+        if abs(edge["max_force"]) > edge["euler_load"]:
+            force_edges.append(edge)
+    return force_edges
+
+
+def get_all_compression_tension_edges(
+    edges: list[Edge], max_forces: dict
+) -> list[dict]:
     force_edges = []
     for edge in edges:
         max_force = max_forces[edge.id]
         force_type = ForceType.COMPRESSION if max_force > 0 else ForceType.TENSION
         euler_load = get_euler_load(l=edge.length(), force_type=force_type)
-        if abs(max_force) > euler_load:
-            force_edges.append(
-                {
-                    "id": edge.id,
-                    "force_type": force_type,
-                    "max_force": max_force,
-                    "euler_load": euler_load,
-                }
-            )
+        force_edges.append(
+            {
+                "id": edge.id,
+                "force_type": force_type,
+                "max_force": max_force,
+                "euler_load": euler_load,
+            }
+        )
     return force_edges
