@@ -53,7 +53,7 @@ def write_json(
     os.makedirs(dirname, exist_ok=True)
     result = {"nodes": {}, "edges": {}, "anchors": {}, "forces": {}}
     for node in nodes:
-        result["nodes"][node.id] = {"x": node.vec.x, "y": node.vec.y, "z": node.vec.z}
+        result["nodes"][node.id] = {"x": float(node.vec.x), "y": float(node.vec.y), "z": float(node.vec.z)}
         if node.r_support and node.t_support:
             result["anchors"][node.id] = {
                 "rx": node.r_support.x,
