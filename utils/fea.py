@@ -168,8 +168,7 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
 
     result = ops.analyze(1)
     if result == -3:  # Ax=b failed
-        for nd in ops.getNodeTags():
-            print(f"Node {nd}: {ops.nodeDOFs(nd)}")
+        raise Exception("Singularity Error")
 
     max_forces = {
         edge.id: ops.basicForce(edge_mapping[edge.id])[0] * -1 for edge in edges
