@@ -128,16 +128,10 @@ class State:
 
     def init_fully_connected(self):
         """init the state with free joint nodes that are within in the config constraints"""
-        free_joints_points = self.get_nodes_in_convex_hull(
-            grid_spacing=self.config.grid_density_unit,
-            clamp_tolerance=self.config.clamp_tolerance,
-        )
-        for point in free_joints_points:
-            self.nodes.append(
-                Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
-            )
-
         self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
+
+        
+
         edges_to_remove = []
         edges_to_add = []
         for edge in self.edges:
@@ -146,7 +140,19 @@ class State:
             self.edges.remove(edge)
         for edge in edges_to_add:
             self.add_edge(edge)
-        self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
+            
+        self.connect_nodes_nearest_neighbors(num_neighbors=2)
+        free_joints_points = self.get_nodes_in_convex_hull(
+            grid_spacing=self.config.grid_density_unit,
+            clamp_tolerance=self.config.clamp_tolerance,
+        )
+        for point in free_joints_points:
+            self.nodes.append(
+                Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
+            )
+        
+        self.connect_nodes_nearest_neighbors(num_neighbors=5)
+
 
         self.max_total_edge_length = self.total_length()
 
