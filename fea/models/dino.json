@@ -600,49 +600,49 @@
   },
   "anchors": {
     "175812bb-0691-494f-a259-5df73b9c6a39": {
-      "rx": true,
-      "ry": true,
-      "rz": true,
+      "rx": false,
+      "ry": false,
+      "rz": false,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "6fe541df-aae8-40ef-bd28-ba7a48d63c2b": {
-      "rx": true,
-      "ry": true,
-      "rz": true,
+      "rx": false,
+      "ry": false,
+      "rz": false,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "a34e1644-cb90-46cf-83da-a805904766d7": {
-      "rx": true,
-      "ry": true,
-      "rz": true,
+      "rx": false,
+      "ry": false,
+      "rz": false,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "614dbcf0-c01e-4f20-b86d-94b9770330c0": {
-      "rx": true,
-      "ry": true,
-      "rz": true,
+      "rx": false,
+      "ry": false,
+      "rz": false,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "859c6be4-bf2b-4d63-a190-c4f8ff973961": {
-      "rx": true,
-      "ry": true,
-      "rz": true,
+      "rx": false,
+      "ry": false,
+      "rz": false,
       "tx": true,
       "ty": true,
       "tz": true
     },
     "b514963f-4691-484e-8ff1-2acda9519f69": {
-      "rx": true,
-      "ry": true,
-      "rz": true,
+      "rx": false,
+      "ry": false,
+      "rz": false,
       "tx": true,
       "ty": true,
       "tz": true

@@ -19,9 +19,9 @@
     },
     "anchors": {
         "anchor1": {
-            "rx": true,
-            "ry": true,
-            "rz": true,
+            "rx": false,
+            "ry": false,
+            "rz": false,
             "tx": true,
             "ty": true,
             "tz": true
