@@ -20,7 +20,7 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
 
     for node in nodes:
         ops.node(node_mapping[node.id], node.vec.x, node.vec.y, node.vec.z)
-        if node.r_support and node.t_support:
+        if node.r_support is not None and node.t_support is not None:
             ops.fix(
                 node_mapping[node.id],
                 int(node.t_support.x),
@@ -72,7 +72,7 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
         wz = np.dot(ops.eleResponse(edge_mapping[edge.id], "zaxis"), b)  # z'*b
         ops.eleLoad("-ele", edge_mapping[edge.id], "-type", "-beamUniform", wy, wz, wx)
 
-    ops.system("BandSPD")
+    ops.system("ProfileSPD")
     ops.numberer("RCM")
     ops.constraints("Plain")
     ops.integrator("LoadControl", 1.0)

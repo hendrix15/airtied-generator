@@ -11,6 +11,7 @@ test_cases = [
     {"name": "perpendicular_pyramid.json", "pynite": True, "openseespy": True},
     {"name": "simple_pyramid.json", "pynite": True, "openseespy": True},
     {"name": "single_beam.json", "pynite": False, "openseespy": False},
+    {"name": "sparse_tower.json", "pynite": False, "openseespy": False},
     {"name": "triangle.json", "pynite": False, "openseespy": False},
 ]
 

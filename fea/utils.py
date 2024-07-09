@@ -7,7 +7,6 @@ from utils.config import load_config
 class Material:
     def __init__(self) -> None:
         config = load_config("fea/coefficients.yaml")
-        print(config)
         args = config.get("material", {})
         self.e = args["e"]
         self.g = args["g"]

@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import numpy as np
 
+
 class Vector3:
     def __init__(self, x: float = 0.0, y: float = 0.0, z: float = 0.0) -> None:
-        self.x = x
-        self.y = y
-        self.z = z
+        self.x = float(x)
+        self.y = float(y)
+        self.z = float(z)
 
     def __add__(self, obj: Vector3) -> Vector3:
         return Vector3(self.x + obj.x, self.y + obj.y, self.z + obj.z)

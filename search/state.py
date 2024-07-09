@@ -42,7 +42,16 @@ class State:
         return copy.deepcopy(self)
 
     def add_node(self, node):
-        self.nodes.append(node)
+        if not self.node_exists(node):
+            self.nodes.append(node)
+            return True
+        return False
+
+    def node_exists(self, node: Node):
+        for n in self.nodes:
+            if n.vec.x == node.vec.x and n.vec.y == node.vec.y and n.vec.z == node.vec.z:
+                return True
+        return False
 
     def add_edge(self, edge):
         if not self._edge_exists(edge.u, edge.v) and not self._edge_intersects(edge):
@@ -136,9 +145,7 @@ class State:
             clamp_tolerance=self.config.clamp_tolerance,
         )
         for point in free_joints_points:
-            self.nodes.append(
-                Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
-            )
+            self.add_node(Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2])))
 
         self.connect_nodes_nearest_neighbors(num_neighbors=5)
 
@@ -274,12 +281,12 @@ class State:
                 (edge.u.vec.z + edge.v.vec.z) / 2,
             )
             new_node = Node(str(uuid.uuid4()), middle)
-            self.add_node(new_node)
-            self.divide_too_long_edge(
-                Edge(str(uuid.uuid4()), edge.u, new_node), edges_to_remove, edges_to_add
-            )
-            self.divide_too_long_edge(
-                Edge(str(uuid.uuid4()), new_node, edge.v), edges_to_remove, edges_to_add
+            if self.add_node(new_node):
+                self.divide_too_long_edge(
+                    Edge(str(uuid.uuid4()), edge.u, new_node), edges_to_remove, edges_to_add
+                )
+                self.divide_too_long_edge(
+                    Edge(str(uuid.uuid4()), new_node, edge.v), edges_to_remove, edges_to_add
             )
 
         else:
