@@ -9,6 +9,9 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
     node_mapping = {node.id: i for i, node in enumerate(nodes)}
     edge_mapping = {edge.id: i for i, edge in enumerate(edges)}
 
+    material = Material()
+    section_properties = SectionProperties()
+
     ops.wipe()
     ops.model("basic", "-ndm", 3, "-ndf", 6)
 
@@ -52,18 +55,18 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
             edge_mapping[edge.id],
             node_mapping[edge.u.id],
             node_mapping[edge.v.id],
-            SectionProperties.a,
-            Material.e,
-            Material.g,
-            SectionProperties.j,
-            SectionProperties.iz,
-            SectionProperties.iy,
+            section_properties.a,
+            material.e,
+            material.g,
+            section_properties.j,
+            section_properties.iz,
+            section_properties.iy,
             transform,
         )
 
     # Add self weight of the beams
     for edge in edges:
-        b = [0, -Material.rho * SectionProperties.a, 0]
+        b = [0, -material.rho * section_properties.a, 0]
         wx = np.dot(ops.eleResponse(edge_mapping[edge.id], "xaxis"), b)  # x'*b
         wy = np.dot(ops.eleResponse(edge_mapping[edge.id], "yaxis"), b)  # y'*b
         wz = np.dot(ops.eleResponse(edge_mapping[edge.id], "zaxis"), b)  # z'*b

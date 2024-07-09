@@ -1,13 +1,12 @@
 import numpy as np
 from PyNite import FEModel3D
 
-from fea.utils import Material
 from search.models import Edge, Node
 
 
 def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
     truss = FEModel3D()
-    truss.add_material(Material.name, 1, 1, 1, 1)
+    truss.add_material("Custom", 1, 1, 1, 1)
 
     for node in nodes:
         truss.add_node(node.id, node.vec.x, node.vec.y, node.vec.z)
@@ -34,7 +33,7 @@ def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:
             edge.id,
             edge.u.id,
             edge.v.id,
-            Material.name,
+            "Custom",
             1,
             1,
             1,

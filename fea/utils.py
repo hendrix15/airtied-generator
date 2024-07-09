@@ -1,28 +1,28 @@
 import math
 
 from search.models import Edge
-
-# 110g per m for d=0,2m beam = 1.08N
-# 275g per m for d=0,5m beam = 2.7N
+from utils.config import load_config
 
 
 class Material:
-    """Material used for Finite Element Analysis"""
-
-    name = "Airtied"
-    e = 199.95  # Modulus of elasticity (GPa)
-    g = 78.60  # Shear modulus (GPa)
-    nu = 0.30  # Poisson's ratio
-    rho = 1 / (math.pi * math.pow((0.2 / 2), 2) * 1) * 0.11  # Density (kg per m^3)
+    def __init__(self) -> None:
+        config = load_config("fea/coefficients.yaml")
+        print(config)
+        args = config.get("material", {})
+        self.e = args["e"]
+        self.g = args["g"]
+        self.nu = args["nu"]
+        self.rho = args["rho"]
 
 
 class SectionProperties:
-    """Section Properties used for Finite Element Analysis"""
-
-    iy = 0.0000072  # Weak axis moment of inertia (m^4)
-    iz = 0.000085  # Strong axis moment of inertia (m^4)
-    j = 1.249e-7  # Torsional constant (m^4)
-    a = math.pi * math.pow((0.2 / 2), 2)  # Cross-sectional area (m^2)
+    def __init__(self) -> None:
+        config = load_config("fea/coefficients.yaml")
+        args = config.get("section_properties", {})
+        self.iy = args["iy"]
+        self.iz = args["iz"]
+        self.j = args["j"]
+        self.a = args["a"]
 
 
 class ForceType:
