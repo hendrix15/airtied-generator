@@ -1,8 +1,11 @@
 import os
 
+from utils.config import load_config
+
 
 class GeneralConfig:
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config_file: str) -> None:
+        config = load_config(config_file)
         args = config.get("general", {})
         self.input_file = args["input_file"]
         self.output_folder = args["output_folder"]
@@ -13,7 +16,8 @@ class GeneralConfig:
 
 
 class UCTSConfig:
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config_file: str) -> None:
+        config = load_config(config_file)
         args = config.get("ucts", {})
         self.max_iter = args["max_iter"]
         self.max_iter_per_node = args["max_iter_per_node"]

@@ -1,0 +1,101 @@
+{
+    "nodes": {
+        "anchor1": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "anchor2": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+        },
+        "anchor3": {
+            "x": 1,
+            "y": 0,
+            "z": 2
+        },
+        "node1": {
+            "x": 1,
+            "y": 6,
+            "z": 1
+        },
+        "17242b11-4125-4b91-8ad2-ebdf363d7f4b": {
+            "x": 1.2,
+            "y": 0.0,
+            "z": 1.2
+        },
+        "5886253c-e3a8-46c2-98a2-3585bd2d67b3": {
+            "x": 1.2,
+            "y": 1.2,
+            "z": 1.2
+        },
+        "3507d013-958b-44df-b3ee-be714782b505": {
+            "x": 1.2,
+            "y": 2.4,
+            "z": 1.2
+        }
+    },
+    "edges": {
+        "c5e70392-0ce1-4164-b059-566dae9cfd9c": {
+            "start": "anchor1",
+            "end": "17242b11-4125-4b91-8ad2-ebdf363d7f4b"
+        },
+        "9c7df85a-24b9-46ec-bebd-6f31cf4765d7": {
+            "start": "anchor1",
+            "end": "anchor2"
+        },
+        "15db32c7-82ad-4cdd-b6f9-9ff9c3464f96": {
+            "start": "anchor1",
+            "end": "3507d013-958b-44df-b3ee-be714782b505"
+        },
+        "c4102aab-87cc-4abc-a150-14ee1a423eae": {
+            "start": "anchor2",
+            "end": "5886253c-e3a8-46c2-98a2-3585bd2d67b3"
+        },
+        "1ad86f12-283f-4777-9de5-606a93f69632": {
+            "start": "anchor3",
+            "end": "5886253c-e3a8-46c2-98a2-3585bd2d67b3"
+        },
+        "de1138c4-3310-423a-9e81-bbcab3c7704d": {
+            "start": "17242b11-4125-4b91-8ad2-ebdf363d7f4b",
+            "end": "5886253c-e3a8-46c2-98a2-3585bd2d67b3"
+        }
+    },
+    "anchors": {
+        "anchor1": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "anchor2": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "anchor3": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        }
+    },
+    "forces": {
+        "5kg_6m_high": {
+            "nodes": [
+                "node1"
+            ],
+            "x": 0,
+            "y": -49,
+            "z": 0
+        }
+    }
+}

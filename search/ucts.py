@@ -3,15 +3,13 @@ from pathlib import Path
 from search.config import GeneralConfig, UCTSConfig
 from search.state import State
 from search.truss_search_tree import TreeSearchNode, TrussSearchTree
-from search.utils import load_config
 from utils.parser import read_json, write_json
 from utils.plot import visualize
 
 
 def execute(config_file: str) -> None:
-    config = load_config(config_file)
-    general_config = GeneralConfig(config)
-    ucts_config = UCTSConfig(config)
+    general_config = GeneralConfig(config_file)
+    ucts_config = UCTSConfig(config_file)
 
     nodes, edges = read_json(general_config.input_file)
 

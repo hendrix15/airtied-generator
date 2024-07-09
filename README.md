@@ -30,15 +30,17 @@ The simple one is based on PyNite and does not require the specification of mate
 Self weight of the beams is not taken into account.
 
 ```sh
-python analyze.py --input output/dino.json  --fea simple
+python analyze.py --input fea/models/dino.json  --fea simple
 ```
 
 The complex one is based on OpenSeesPy and requires the specification of correct material coefficients.
 Self weight of the beams is taken into account.
 
 ```sh
-python analyze.py --input output/dino.json  --fea complex
+python analyze.py --input fea/models/dino.json  --fea complex
 ```
+
+The material coefficients are specified in the file `fea/coefficients.yaml`. Because `k`, `g`, `nu`, `iy`, `iz` and `j` are currently not known for Airtied, the corresponding coefficients of steel are used. Only `rho` and `a` are specified for the small Airtied beam with 20cm diameter.
 
 ## Truss Generation
 
@@ -48,7 +50,7 @@ Generate a truss for a given scenario defined in a config file
 python main.py --config config/tower.yaml
 ```
 
-For the UCT search the simple and faster FEA is used.
+For the UCT search the simple FEA is used because of the missing material coefficients.
 
 ## Model Representation
 

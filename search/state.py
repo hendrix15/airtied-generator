@@ -6,10 +6,11 @@ from functools import cache
 import numpy as np
 from scipy.spatial import ConvexHull, distance_matrix
 
+from fea.pynite import fea_pynite
+from fea.utils import get_all_compression_tension_edges
 from search.action import AbstractAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from utils.fea import fea_pynite, get_all_compression_tension_edges
 
 
 class State:
