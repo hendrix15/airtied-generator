@@ -47,7 +47,7 @@ The material coefficients are specified in the file `fea/coefficients.yaml`. Bec
 Generate a truss for a given scenario defined in a config file
 
 ```sh
-python main.py --config config/tower.yaml
+python main.py --config search/config/tower.yaml
 ```
 
 For the UCT search the simple FEA is used because of the missing material coefficients.

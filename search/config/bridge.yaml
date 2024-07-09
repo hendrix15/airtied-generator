@@ -1,6 +1,6 @@
 general:
-  input_file: "input/bridge_hanging_round.json"
-  output_folder: "output/"
+  input_file: "search/input/bridge_hanging_round.json"
+  output_folder: "search/output/"
   k: 5
 
 ucts:
