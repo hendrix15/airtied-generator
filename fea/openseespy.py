@@ -20,7 +20,7 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
 
     for node in nodes:
         ops.node(node_mapping[node.id], node.vec.x, node.vec.y, node.vec.z)
-        if node.r_support and node.t_support:
+        if node.r_support is not None and node.t_support is not None:
             ops.fix(
                 node_mapping[node.id],
                 int(node.t_support.x),

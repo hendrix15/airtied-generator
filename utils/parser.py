@@ -53,7 +53,11 @@ def write_json(
     os.makedirs(dirname, exist_ok=True)
     result = {"nodes": {}, "edges": {}, "anchors": {}, "forces": {}}
     for node in nodes:
-        result["nodes"][node.id] = {"x": float(node.vec.x), "y": float(node.vec.y), "z": float(node.vec.z)}
+        result["nodes"][node.id] = {
+            "x": float(node.vec.x),
+            "y": float(node.vec.y),
+            "z": float(node.vec.z),
+        }
         if node.r_support and node.t_support:
             result["anchors"][node.id] = {
                 "rx": node.r_support.x,
@@ -63,6 +67,25 @@ def write_json(
                 "ty": node.t_support.y,
                 "tz": node.t_support.z,
             }
+        if node.load:
+            try:
+                force_id = next(
+                    force_id
+                    for force_id in result["forces"]
+                    if result["forces"][force_id]["x"] == node.load.x
+                    and result["forces"][force_id]["y"] == node.load.y
+                    and result["forces"][force_id]["z"] == node.load.z
+                )
+                result["forces"][force_id]["nodes"].append(node.id)
+            except StopIteration:
+                force_id = str(uuid.uuid4())
+                result["forces"][force_id] = {
+                    "nodes": [node.id],
+                    "x": node.load.x,
+                    "y": node.load.y,
+                    "z": node.load.z,
+                }
+
     for edge in edges:
         result["edges"][edge.id] = {"start": edge.u.id, "end": edge.v.id}
     with open(f"{dirname}{filename}", "w") as f:
