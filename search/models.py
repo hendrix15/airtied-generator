@@ -94,6 +94,9 @@ class Node:
             ),
             "fixed": self.fixed,
         }
+    
+    def to_array(self):
+        return [self.vec.x, self.vec.y, self.vec.z]
 
 
 class Edge:

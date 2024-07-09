@@ -11,6 +11,8 @@ from fea.utils import get_all_compression_tension_edges
 from search.action import AbstractAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
+from skspatial.objects import LineSegment, Point
+from math import sqrt
 
 
 class State:
@@ -43,7 +45,7 @@ class State:
         self.nodes.append(node)
 
     def add_edge(self, edge):
-        if not self._edge_exists(edge.u, edge.v):
+        if not self._edge_exists(edge.u, edge.v) and not self._edge_intersects(edge):
             self.edges.append(edge)
 
     # def get_legal_actions(self):
@@ -282,3 +284,20 @@ class State:
 
         else:
             edges_to_add.append(edge)
+
+    
+    def _edge_intersects(self, edge:Edge):
+        line_a = LineSegment(edge.u.to_array(), edge.v.to_array())
+        for existing_edge in self.edges:
+            line_b = LineSegment(existing_edge.u.to_array(), existing_edge.v.to_array())
+            try:
+                
+                intersection = line_a.intersect_line_segment(line_b)
+                if intersection.is_equal(line_a.point_a) or intersection.is_equal(line_a.point_b) or intersection.is_equal(line_b.point_a) or intersection.is_equal(line_b.point_b):
+                    continue
+                if intersection is not None:
+                    return True
+                
+            except Exception :
+                continue
+        return False
