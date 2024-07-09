@@ -1,19 +1,15 @@
 import copy
 import random
 import uuid
-from math import ceil, floor
+from functools import cache
 
 import numpy as np
 from scipy.spatial import ConvexHull, distance_matrix
 
-from search.action import AbstractAction, AddEdgeAction, AddNodeAction, RemoveEdgeAction
+from search.action import AbstractAction, RemoveEdgeAction
 from search.config import UCTSConfig
 from search.models import Edge, Node, Vector3
-from utils.fea import get_all_compression_tension_edges
-from functools import cache
-
-from utils.plot import visualize
-from utils.fea import fea_pynite
+from utils.fea import fea_pynite, get_all_compression_tension_edges
 
 
 class State:
@@ -65,10 +61,12 @@ class State:
         if len(self.edges) == 0:
             return -1
         force_ratios = []
-    
+
         try:
             max_forces = fea_pynite(self.nodes, self.edges)
-            compression_tension_edges = get_all_compression_tension_edges(self.edges, max_forces)
+            compression_tension_edges = get_all_compression_tension_edges(
+                self.edges, max_forces
+            )
             for entry in compression_tension_edges:
                 force_ratios.append(abs(entry["max_force"]) / abs(entry["euler_load"]))
 
@@ -77,31 +75,21 @@ class State:
                     #     f"Member {edge.id}: Max force of {max_force} exceeds the euler load of {euler_load}"
                     # )
                     return -1
-            
+
             max_ratio = max(force_ratios)
             min_ratio = min(force_ratios)
         except Exception as e:
-            print('returning -1 due to exception:')
+            print("returning -1 due to exception:")
             print(e)
             return -1
-        
 
-        return (max_ratio - min_ratio)
+        return max_ratio - min_ratio
 
     def should_stop_search(self):
-        return self.iteration > self.config.max_iter_per_node or self.calculate_fea_score() < 0
-
-    def _create_random_node(self):
-        min_x, max_x = self.config.min_x, self.config.max_x
-        min_y, max_y = self.config.min_y, self.config.max_y
-        min_z, max_z = self.config.min_z, self.config.max_z
-        id = str(uuid.uuid4())
-
-        x = random.randint(floor(min_x / 0.25), ceil(max_x / 0.25)) * 0.25
-        y = random.randint(floor(min_y / 0.25), ceil(max_y / 0.25)) * 0.25
-        z = random.randint(floor(min_z / 0.25), ceil(max_z / 0.25)) * 0.25
-
-        return Node(id, Vector3(x, y, z))
+        return (
+            self.iteration > self.config.max_iter_per_node
+            or self.calculate_fea_score() < 0
+        )
 
     def _create_new_edge_for_existing_nodes(self):
         if len(self.edges) == len(self.nodes) * (len(self.nodes) - 1) / 2:
@@ -130,8 +118,6 @@ class State:
         """init the state with free joint nodes that are within in the config constraints"""
         self.connect_nodes_nearest_neighbors(num_neighbors=self.config.num_neighbors)
 
-        
-
         edges_to_remove = []
         edges_to_add = []
         for edge in self.edges:
@@ -140,7 +126,7 @@ class State:
             self.edges.remove(edge)
         for edge in edges_to_add:
             self.add_edge(edge)
-            
+
         self.connect_nodes_nearest_neighbors(num_neighbors=2)
         free_joints_points = self.get_nodes_in_convex_hull(
             grid_spacing=self.config.grid_density_unit,
@@ -150,9 +136,8 @@ class State:
             self.nodes.append(
                 Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
             )
-        
-        self.connect_nodes_nearest_neighbors(num_neighbors=5)
 
+        self.connect_nodes_nearest_neighbors(num_neighbors=5)
 
         self.max_total_edge_length = self.total_length()
 
@@ -255,8 +240,13 @@ class State:
             # Find the indices of the nearest neighbors
             nearest_neighbors = np.argsort(dist_matrix[i])[:num_neighbors]
             for neighbor in nearest_neighbors:
-                if not self._edge_exists(self.nodes[i], self.nodes[neighbor]) and i != neighbor:
-                    self.add_edge(Edge(str(uuid.uuid4()), self.nodes[i], self.nodes[neighbor]))
+                if (
+                    not self._edge_exists(self.nodes[i], self.nodes[neighbor])
+                    and i != neighbor
+                ):
+                    self.add_edge(
+                        Edge(str(uuid.uuid4()), self.nodes[i], self.nodes[neighbor])
+                    )
 
     def _get_free_edges(self):
         free_edges = []
@@ -267,8 +257,9 @@ class State:
                     free_edges.append(edge)
         return free_edges
 
-    def divide_too_long_edge(self, edge : Edge, edges_to_remove :list, edges_to_add :list):
-
+    def divide_too_long_edge(
+        self, edge: Edge, edges_to_remove: list, edges_to_add: list
+    ):
         if edge.length() > self.config.max_edge_len:
             # visualize(nodes =self.nodes, edges= self.edges, compression_edges=[edge.id])
 
@@ -281,8 +272,12 @@ class State:
             )
             new_node = Node(str(uuid.uuid4()), middle)
             self.add_node(new_node)
-            self.divide_too_long_edge(Edge(str(uuid.uuid4()), edge.u, new_node), edges_to_remove, edges_to_add)
-            self.divide_too_long_edge(Edge(str(uuid.uuid4()), new_node, edge.v), edges_to_remove, edges_to_add)
+            self.divide_too_long_edge(
+                Edge(str(uuid.uuid4()), edge.u, new_node), edges_to_remove, edges_to_add
+            )
+            self.divide_too_long_edge(
+                Edge(str(uuid.uuid4()), new_node, edge.v), edges_to_remove, edges_to_add
+            )
 
         else:
             edges_to_add.append(edge)

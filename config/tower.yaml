@@ -1,21 +1,12 @@
 general:
   input_file: "input/tower.json"
   output_folder: "output/"
-  image_folder: "images/"
-  k: 10
+  k: 5
 
 ucts:
-  max_nodes: 7
   max_iter: 5000
   max_iter_per_node: 3
   max_edge_len: 4
-  coordinate_range:
-    - - 0.0
-      - 2.0
-    - - 0.0
-      - 2.0
-    - - 0.0
-      - 4.0
   grid_density_unit: 1
   num_neighbors: 3
   clamp_tolerance: 1

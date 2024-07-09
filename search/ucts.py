@@ -4,7 +4,6 @@ from search.config import GeneralConfig, UCTSConfig
 from search.state import State
 from search.truss_search_tree import TreeSearchNode, TrussSearchTree
 from search.utils import load_config
-from search.visualize import visualize_tree
 from utils.parser import read_json, write_json
 from utils.plot import visualize
 
@@ -36,7 +35,7 @@ def execute(config_file: str) -> None:
     # visualize_tree(root)
     # return
     # Store and print best k children
-    best_children = mcts.get_k_best_children(5)
+    best_children = mcts.get_k_best_children(general_config.k)
     for i, child in enumerate(best_children):
         nodes = [node for node in child.state.nodes]
         edges = [edge for edge in child.state.edges]
