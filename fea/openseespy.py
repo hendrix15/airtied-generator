@@ -2,7 +2,7 @@ import numpy as np
 import openseespy.opensees as ops
 
 from fea.utils import Material, SectionProperties
-from search.models import Edge, Node
+from utils.models import Edge, Node
 
 
 def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:

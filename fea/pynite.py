@@ -1,7 +1,7 @@
 import numpy as np
 from PyNite import FEModel3D
 
-from search.models import Edge, Node
+from utils.models import Edge, Node
 
 
 def fea_pynite(nodes: list[Node], edges: list[Edge]) -> dict:

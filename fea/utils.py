@@ -1,7 +1,7 @@
 import math
 
-from search.models import Edge
 from utils.config import load_config
+from utils.models import Edge
 
 
 class Material:

@@ -5,14 +5,13 @@ from functools import cache
 
 import numpy as np
 from scipy.spatial import ConvexHull, distance_matrix
+from skspatial.objects import LineSegment
 
 from fea.pynite import fea_pynite
 from fea.utils import get_all_compression_tension_edges
 from search.action import AbstractAction, RemoveEdgeAction
 from search.config import UCTSConfig
-from search.models import Edge, Node, Vector3
-from skspatial.objects import LineSegment, Point
-from math import sqrt
+from utils.models import Edge, Node, Vector3
 
 
 class State:
@@ -49,7 +48,11 @@ class State:
 
     def node_exists(self, node: Node):
         for n in self.nodes:
-            if n.vec.x == node.vec.x and n.vec.y == node.vec.y and n.vec.z == node.vec.z:
+            if (
+                n.vec.x == node.vec.x
+                and n.vec.y == node.vec.y
+                and n.vec.z == node.vec.z
+            ):
                 return True
         return False
 
@@ -145,7 +148,9 @@ class State:
             clamp_tolerance=self.config.clamp_tolerance,
         )
         for point in free_joints_points:
-            self.add_node(Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2])))
+            self.add_node(
+                Node(str(uuid.uuid4()), Vector3(point[0], point[1], point[2]))
+            )
 
         self.connect_nodes_nearest_neighbors(num_neighbors=5)
 
@@ -283,28 +288,35 @@ class State:
             new_node = Node(str(uuid.uuid4()), middle)
             if self.add_node(new_node):
                 self.divide_too_long_edge(
-                    Edge(str(uuid.uuid4()), edge.u, new_node), edges_to_remove, edges_to_add
+                    Edge(str(uuid.uuid4()), edge.u, new_node),
+                    edges_to_remove,
+                    edges_to_add,
                 )
                 self.divide_too_long_edge(
-                    Edge(str(uuid.uuid4()), new_node, edge.v), edges_to_remove, edges_to_add
-            )
+                    Edge(str(uuid.uuid4()), new_node, edge.v),
+                    edges_to_remove,
+                    edges_to_add,
+                )
 
         else:
             edges_to_add.append(edge)
 
-    
-    def _edge_intersects(self, edge:Edge):
+    def _edge_intersects(self, edge: Edge):
         line_a = LineSegment(edge.u.to_array(), edge.v.to_array())
         for existing_edge in self.edges:
             line_b = LineSegment(existing_edge.u.to_array(), existing_edge.v.to_array())
             try:
-                
                 intersection = line_a.intersect_line_segment(line_b)
-                if intersection.is_equal(line_a.point_a) or intersection.is_equal(line_a.point_b) or intersection.is_equal(line_b.point_a) or intersection.is_equal(line_b.point_b):
+                if (
+                    intersection.is_equal(line_a.point_a)
+                    or intersection.is_equal(line_a.point_b)
+                    or intersection.is_equal(line_b.point_a)
+                    or intersection.is_equal(line_b.point_b)
+                ):
                     continue
                 if intersection is not None:
                     return True
-                
-            except Exception :
+
+            except Exception:
                 continue
         return False

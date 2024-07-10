@@ -1,7 +1,9 @@
-from abc import ABC, abstractmethod
 import random
-from search.models import Edge, Node
 import uuid
+from abc import ABC, abstractmethod
+
+from utils.models import Edge, Node
+
 
 class AbstractAction(ABC):
     @abstractmethod
@@ -74,14 +76,17 @@ class RemoveEdgeAction(AbstractAction):
         nodes = [self.edge.u, self.edge.v]
         for edge_node in nodes:
             if not any(
-                [edge for edge in new_state.edges if edge.u.id == edge_node.id or edge.v.id == edge_node.id]
+                [
+                    edge
+                    for edge in new_state.edges
+                    if edge.u.id == edge_node.id or edge.v.id == edge_node.id
+                ]
             ):
                 if edge_node.fixed or edge_node.load:
                     continue
                 new_state.nodes = [
                     node for node in new_state.nodes if node.id != edge_node.id
                 ]
-
 
         new_state.iteration += 1
         return new_state
