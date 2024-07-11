@@ -5,7 +5,10 @@ from fea.pynite import fea_pynite
 from utils.parser import read_json
 
 test_cases = [
+    {"name": "beam_tower.json", "pynite": False, "openseespy": False},
     {"name": "complex_pyramid.json", "pynite": True, "openseespy": True},
+    {"name": "complex_tower.json", "pynite": False, "openseespy": False},
+    {"name": "crane.json", "pynite": True, "openseespy": True},
     {"name": "dino.json", "pynite": True, "openseespy": True},
     {"name": "floating_point.json", "pynite": False, "openseespy": False},
     {"name": "perpendicular_pyramid.json", "pynite": True, "openseespy": True},
