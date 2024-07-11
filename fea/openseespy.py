@@ -43,13 +43,16 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
 
     # Transformation of local coordinate system
     ops.geomTransf("Linear", 1, 0, 0, 1)
-    ops.geomTransf("Linear", 2, 1, 0, 0)
+    ops.geomTransf("Linear", 2, 0, 1, 0)
+    ops.geomTransf("Linear", 3, 1, 0, 0)
 
     for edge in edges:
         # Select transformation
-        transform = (
-            2 if edge.u.vec.x == edge.v.vec.x and edge.u.vec.y == edge.v.vec.y else 1
-        )
+        transform = 1
+        if edge.u.vec.x == edge.v.vec.x and edge.u.vec.y == edge.v.vec.y:
+            transform = 2
+        if edge.u.vec.x == edge.v.vec.x and edge.u.vec.z == edge.v.vec.z:
+            transform = 3
         ops.element(
             "elasticBeamColumn",
             edge_mapping[edge.id],
@@ -62,6 +65,10 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
             section_properties.iz,
             section_properties.iy,
             transform,
+            "-releasez",
+            1,  # should be 3
+            "-releasey",
+            0,  # should be 3
         )
 
     # Add self weight of the beams
@@ -81,6 +88,9 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
 
     result = ops.analyze(1)
     if result == -3:  # Ax=b failed
+        for nd in ops.getNodeTags():
+            node_id = next(k for k, v in node_mapping.items() if v == nd)
+            print(f"Node {node_id}: {ops.nodeDOFs(nd)}")
         raise Exception("Singularity Error")
 
     max_forces = {
