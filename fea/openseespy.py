@@ -68,7 +68,7 @@ def fea_opensees(nodes: list[Node], edges: list[Edge]) -> dict:
             "-releasez",
             1,  # should be 3
             "-releasey",
-            0,  # should be 3
+            1,  # should be 3
         )
 
     # Add self weight of the beams
