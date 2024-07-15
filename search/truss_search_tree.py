@@ -54,8 +54,7 @@ class TreeSearchNode:
         self.score = (
             -1
             if fea_score < 0
-            else (1 - fea_score)
-            + (1 - (self.state.total_length() / self.state.max_total_edge_length))
+            else (1 - (self.state.total_length() / self.state.max_total_edge_length))
         )
         return self.score
 
@@ -68,7 +67,7 @@ class TreeSearchNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    def best_child(self, c_param=0):
+    def best_child(self, c_param=0.3):
         choices_weights = [
             (c.q / c.n) + c_param * np.sqrt((2 * np.log(self.n) / c.n))
             for c in self.children
