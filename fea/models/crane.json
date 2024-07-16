@@ -1,0 +1,137 @@
+{
+    "nodes": {
+        "9afe9d50-27ab-4ce2-acfd-70a52ae684ea": {
+            "x": -4.164264,
+            "y": 3.787342,
+            "z": 3.481335
+        },
+        "4f1c7d2b-1679-43e7-8510-29f3ecef8541": {
+            "x": 0.786707,
+            "y": 1.14509,
+            "z": 2.502503
+        },
+        "f682fe23-fa1a-45d6-aa88-ea1ce900d6db": {
+            "x": 0.110799,
+            "y": 1.149319,
+            "z": 0.583622
+        },
+        "4cc8407c-8b59-4a3d-902a-d91c91c57bb4": {
+            "x": 2.244771,
+            "y": 0.131994,
+            "z": 1.918465
+        },
+        "27602034-f038-459c-85d0-2c9f12228eee": {
+            "x": 0.154919,
+            "y": 0.107828,
+            "z": 1.992716
+        },
+        "91db7102-a591-4405-9a50-a1d53cf34b84": {
+            "x": 1.438294,
+            "y": 0.119213,
+            "z": -0.106014
+        },
+        "f65c8c7e-7cc2-4ccc-a904-4d0afca6eab3": {
+            "x": 2.118016,
+            "y": 2.354759,
+            "z": 0.95649
+        }
+    },
+    "edges": {
+        "a8527d75-346a-4f11-b64b-fb8146c59966": {
+            "start": "9afe9d50-27ab-4ce2-acfd-70a52ae684ea",
+            "end": "4f1c7d2b-1679-43e7-8510-29f3ecef8541"
+        },
+        "d40ddaaf-493b-4292-8503-514830272ffc": {
+            "start": "9afe9d50-27ab-4ce2-acfd-70a52ae684ea",
+            "end": "f65c8c7e-7cc2-4ccc-a904-4d0afca6eab3"
+        },
+        "f164664c-2429-4419-a23a-8d6b80d65110": {
+            "start": "f682fe23-fa1a-45d6-aa88-ea1ce900d6db",
+            "end": "4f1c7d2b-1679-43e7-8510-29f3ecef8541"
+        },
+        "7b55f1e4-3302-4762-9108-a5bf874e8275": {
+            "start": "4f1c7d2b-1679-43e7-8510-29f3ecef8541",
+            "end": "4cc8407c-8b59-4a3d-902a-d91c91c57bb4"
+        },
+        "8678cc7d-4699-49cb-9685-9fd39e83614d": {
+            "start": "27602034-f038-459c-85d0-2c9f12228eee",
+            "end": "91db7102-a591-4405-9a50-a1d53cf34b84"
+        },
+        "8c9ea28a-8e05-4e27-a6a3-83609684d70c": {
+            "start": "4cc8407c-8b59-4a3d-902a-d91c91c57bb4",
+            "end": "27602034-f038-459c-85d0-2c9f12228eee"
+        },
+        "e6ae5aee-32d6-4a76-a48b-0dcc1a052400": {
+            "start": "4f1c7d2b-1679-43e7-8510-29f3ecef8541",
+            "end": "27602034-f038-459c-85d0-2c9f12228eee"
+        },
+        "708561c5-1959-470f-9619-da97bb02b179": {
+            "start": "91db7102-a591-4405-9a50-a1d53cf34b84",
+            "end": "f682fe23-fa1a-45d6-aa88-ea1ce900d6db"
+        },
+        "4f06b735-bc50-4a2c-946e-ad7058f910c3": {
+            "start": "f682fe23-fa1a-45d6-aa88-ea1ce900d6db",
+            "end": "27602034-f038-459c-85d0-2c9f12228eee"
+        },
+        "aa117f19-f366-4c0c-821c-66bf34f4f9af": {
+            "start": "91db7102-a591-4405-9a50-a1d53cf34b84",
+            "end": "4cc8407c-8b59-4a3d-902a-d91c91c57bb4"
+        },
+        "a420f190-20a4-49eb-be22-7be2a05d87a9": {
+            "start": "9afe9d50-27ab-4ce2-acfd-70a52ae684ea",
+            "end": "f682fe23-fa1a-45d6-aa88-ea1ce900d6db"
+        },
+        "67a62cd3-9bf6-4052-891d-82884160c3e6": {
+            "start": "91db7102-a591-4405-9a50-a1d53cf34b84",
+            "end": "f65c8c7e-7cc2-4ccc-a904-4d0afca6eab3"
+        },
+        "cdbfd9d6-f600-44b4-8fde-701bcb3eb251": {
+            "start": "4cc8407c-8b59-4a3d-902a-d91c91c57bb4",
+            "end": "f65c8c7e-7cc2-4ccc-a904-4d0afca6eab3"
+        },
+        "5e26b7c5-1603-486d-af17-bc079a1c6133": {
+            "start": "f65c8c7e-7cc2-4ccc-a904-4d0afca6eab3",
+            "end": "4f1c7d2b-1679-43e7-8510-29f3ecef8541"
+        },
+        "80939108-4238-4836-b9e2-c6d4e654ae01": {
+            "start": "f682fe23-fa1a-45d6-aa88-ea1ce900d6db",
+            "end": "f65c8c7e-7cc2-4ccc-a904-4d0afca6eab3"
+        }
+    },
+    "anchors": {
+        "4cc8407c-8b59-4a3d-902a-d91c91c57bb4": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "27602034-f038-459c-85d0-2c9f12228eee": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "91db7102-a591-4405-9a50-a1d53cf34b84": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        }
+    },
+    "forces": {
+        "load_node": {
+            "nodes": [
+                "9afe9d50-27ab-4ce2-acfd-70a52ae684ea"
+            ],
+            "x": 0,
+            "y": -80,
+            "z": 0
+        }
+    }
+}

@@ -1,24 +1,30 @@
 from argparse import ArgumentParser
 
-from utils.fea import ForceType, fea_opensees, fea_pynite, get_compression_tension_edges
+from fea.openseespy import fea_opensees
+from fea.pynite import fea_pynite
+from fea.utils import ForceType, get_breaking_compression_tension_edges
 from utils.parser import read_json
 from utils.plot import visualize
 
 
 def main() -> None:
     parser = ArgumentParser()
-    parser.add_argument("--input", type=str, default="dino.json")
-    parser.add_argument("--fea", type=str, default="pynite")
+    parser.add_argument("--input", type=str)
+    parser.add_argument(
+        "--fea", type=str, choices=["simple", "complex"], default="simple"
+    )
     args = parser.parse_args()
 
     nodes, edges = read_json(args.input)
-    if args.fea == "pynite":
+    if args.fea == "simple":
         max_forces = fea_pynite(nodes, edges)
-    if args.fea == "opensees":
+    if args.fea == "complex":
         max_forces = fea_opensees(nodes, edges)
     print(max_forces)
 
-    compression_tension_edges = get_compression_tension_edges(edges, max_forces)
+    compression_tension_edges = get_breaking_compression_tension_edges(
+        edges, max_forces
+    )
     for entry in compression_tension_edges:
         print(
             f"Member {entry['id']}: Max force of {entry['max_force']}, {entry['force_type']} exceeds the euler load of {entry['euler_load']}"

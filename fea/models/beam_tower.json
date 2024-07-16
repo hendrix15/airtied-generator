@@ -1,0 +1,131 @@
+{
+    "nodes": {
+        "anchor1": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "anchor2": {
+            "x": 2.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "anchor3": {
+            "x": 1.0,
+            "y": 0.0,
+            "z": 2.0
+        },
+        "node1": {
+            "x": 1.0,
+            "y": 6.0,
+            "z": 1.0
+        },
+        "1": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "2": {
+            "x": 1.0,
+            "y": 2.0,
+            "z": 1.0
+        },
+        "3": {
+            "x": 1.0,
+            "y": 3.0,
+            "z": 1.0
+        },
+        "4": {
+            "x": 1.0,
+            "y": 4.0,
+            "z": 1.0
+        },
+        "5": {
+            "x": 1.0,
+            "y": 5.0,
+            "z": 1.0
+        }
+    },
+    "edges": {
+        "ea134682-f4d8-41c2-b7c1-7f9d7d89439d": {
+            "start": "anchor1",
+            "end": "anchor2"
+        },
+        "19fdeae4-eab5-4c71-9743-c1ee9509fd88": {
+            "start": "anchor1",
+            "end": "anchor3"
+        },
+        "8493f8b7-a52a-4d8c-aae8-188080cc7509": {
+            "start": "anchor2",
+            "end": "anchor3"
+        },
+        "60fb9175-d23e-4f88-8325-a40ad8cb461b": {
+            "start": "anchor1",
+            "end": "1"
+        },
+        "a216292f-36af-458f-bd46-c9622d997588": {
+            "start": "anchor2",
+            "end": "1"
+        },
+        "eba1e3ed-9d04-41eb-99e1-c026f269413b": {
+            "start": "anchor3",
+            "end": "1"
+        },
+        "0b4cac18-fb04-4c14-ac15-3cf0165d3530": {
+            "start": "1",
+            "end": "2"
+        },
+        "b1cef4bd-0028-43bd-8a9f-367603323524": {
+            "start": "2",
+            "end": "3"
+        },
+        "208c5458-3e05-40b5-8fd6-37e61ce8f912": {
+            "start": "3",
+            "end": "4"
+        },
+        "f60daa8b-3d35-47b6-bb18-3d11c9593f32": {
+            "start": "4",
+            "end": "5"
+        },
+        "8f5e4543-9fa1-4b2a-818f-6a76bb163ed7": {
+            "start": "5",
+            "end": "node1"
+        }
+    },
+    "anchors": {
+        "anchor1": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "anchor2": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "anchor3": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        }
+    },
+    "forces": {
+        "5kg_6m_high": {
+            "nodes": [
+                "node1"
+            ],
+            "x": 0,
+            "y": -5,
+            "z": -3
+        }
+    }
+}

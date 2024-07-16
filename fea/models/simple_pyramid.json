@@ -1,0 +1,86 @@
+{
+    "nodes": {
+        "anchor1": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "anchor2": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+        },
+        "anchor3": {
+            "x": 1,
+            "y": 0,
+            "z": 2
+        },
+        "node1": {
+            "x": 1,
+            "y": 3,
+            "z": 1.2
+        }
+    },
+    "edges": {
+        "7e2152c4-c22f-4427-8430-257cddc7e851": {
+            "start": "anchor1",
+            "end": "anchor2"
+        },
+        "57ca7d59-4383-4c1c-a2c7-d44df5cdbf2a": {
+            "start": "anchor1",
+            "end": "anchor3"
+        },
+        "5b5f12e2-df93-4a53-9f44-9336488b1e65": {
+            "start": "anchor1",
+            "end": "node1"
+        },
+        "2c03b47f-cbc3-4e01-a8c0-4b5c37157e99": {
+            "start": "anchor2",
+            "end": "anchor3"
+        },
+        "aea7d667-5369-44cf-b7c5-fce35546d157": {
+            "start": "anchor2",
+            "end": "node1"
+        },
+        "659a65f1-37b4-47eb-8f15-c44f309905fa": {
+            "start": "anchor3",
+            "end": "node1"
+        }
+    },
+    "anchors": {
+        "anchor1": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "anchor2": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        },
+        "anchor3": {
+            "rx": false,
+            "ry": false,
+            "rz": false,
+            "tx": true,
+            "ty": true,
+            "tz": true
+        }
+    },
+    "forces": {
+        "5kg_6m_high": {
+            "nodes": [
+                "node1"
+            ],
+            "x": 0,
+            "y": -10,
+            "z": 0
+        }
+    }
+}

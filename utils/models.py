@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import numpy as np
 
+
 class Vector3:
     def __init__(self, x: float = 0.0, y: float = 0.0, z: float = 0.0) -> None:
-        self.x = x
-        self.y = y
-        self.z = z
+        self.x = float(x)
+        self.y = float(y)
+        self.z = float(z)
 
     def __add__(self, obj: Vector3) -> Vector3:
         return Vector3(self.x + obj.x, self.y + obj.y, self.z + obj.z)
@@ -26,6 +27,9 @@ class Vector3:
 
     def __str__(self) -> str:
         return str("(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")")
+    
+    def toArray(self) -> np.ndarray:
+        return np.array([self.x, self.y, self.z])
 
     def length(self) -> float:
         return (self.x * self.x + self.y * self.y + self.z * self.z) ** 0.5
@@ -94,6 +98,9 @@ class Node:
             ),
             "fixed": self.fixed,
         }
+    
+    def to_array(self):
+        return [self.vec.x, self.vec.y, self.vec.z]
 
 
 class Edge:
