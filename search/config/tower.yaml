@@ -4,8 +4,8 @@ general:
   k: 5
 
 ucts:
-  max_iter: 5000
-  max_iter_per_node: 3
+  max_iter: 40000
+  max_iter_per_node: 5
   max_edge_len: 4
   grid_density_unit: 1
   num_neighbors: 3

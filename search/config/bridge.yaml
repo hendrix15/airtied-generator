@@ -1,12 +1,12 @@
 general:
-  input_file: "search/input/bridge_hanging_round.json"
+  input_file: "search/input/bridge.json"
   output_folder: "search/output/"
   k: 5
 
 ucts:
-  max_iter: 5000
-  max_iter_per_node: 3
+  max_iter: 20000
+  max_iter_per_node: 6
   max_edge_len: 3
-  grid_density_unit: 1.2
-  num_neighbors: 6
+  grid_density_unit: 1
+  num_neighbors: 3
   clamp_tolerance: 0.1

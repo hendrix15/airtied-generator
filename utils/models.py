@@ -27,6 +27,9 @@ class Vector3:
 
     def __str__(self) -> str:
         return str("(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")")
+    
+    def toArray(self) -> np.ndarray:
+        return np.array([self.x, self.y, self.z])
 
     def length(self) -> float:
         return (self.x * self.x + self.y * self.y + self.z * self.z) ** 0.5
