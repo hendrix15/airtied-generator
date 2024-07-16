@@ -22,31 +22,41 @@ poetry env use python3.11
 poetry install
 ```
 
-## Pipeline
+## FEA Analysis
 
-Start the pipeline
+For the FEA analysis of an existing truss structure, two different implementations can be used.
 
-```sh
-python main.py
-```
-
-## Helper
-
-Convert an obj truss into the used json format
+The simple one is based on PyNite and does not require the specification of material coefficients.
+Self weight of the beams is not taken into account.
 
 ```sh
-python convert.py --input dino.obj --output dino.json
+python analyze.py --input fea/models/dino.json  --fea simple
 ```
 
-Analyze an existing truss structure
+The complex one is based on OpenSeesPy and requires the specification of correct material coefficients.
+Self weight of the beams is taken into account.
 
 ```sh
-python analyze.py --input output/dino.json
+python analyze.py --input fea/models/dino.json  --fea complex
 ```
 
-## Representation
+The material coefficients are specified in the file `fea/coefficients.yaml`. Because `k`, `g`, `nu`, `iy`, `iz` and `j` are currently not known for Airtied, the corresponding coefficients of steel are used. Only `rho` and `a` are specified for the small Airtied beam with 20cm diameter.
 
-```json
+## Truss Generation
+
+Generate a truss for a given scenario defined in a config file
+
+```sh
+python main.py --config search/config/tower.yaml
+```
+
+For the UCT search the simple FEA is used because of the missing material coefficients.
+
+## Model Representation
+
+Input for scenarios and resulting models are defined in a custom json format
+
+```
 {
     "nodes": {
         "node1": {
@@ -91,4 +101,10 @@ python analyze.py --input output/dino.json
         ...
     }
 }
+```
+
+Convert an obj truss into the used json format
+
+```sh
+python convert.py --input dino.obj --output dino.json
 ```

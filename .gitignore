@@ -166,6 +166,9 @@ cython_debug/
 data/
 training_data/out
 
-images
-output
-!output/dino.json
+# Mac
+.DS_Store
+
+
+# Output
+search/output

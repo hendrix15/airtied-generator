@@ -2,7 +2,7 @@ import os
 
 import matplotlib.pyplot as plt
 
-from search.models import Edge, Node
+from utils.models import Edge, Node
 
 
 def visualize(
